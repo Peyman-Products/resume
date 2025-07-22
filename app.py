@@ -4,8 +4,9 @@ import os
 
 app = Flask(__name__)
 
-# Path to Excel data file
-DATA_FILE = 'candidates.xlsx'
+# Path to Excel data file (placed alongside this script)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(BASE_DIR, 'candidates.xlsx')
 
 # If file doesn't exist, create with all required columns
 if not os.path.exists(DATA_FILE):
@@ -57,13 +58,23 @@ def add_candidate():
     }
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     write_data(df)
-    return redirect(url_for('index'))
+    # redirect to the full edit form to complete details
+    return redirect(url_for('edit_form', candidate_id=new_id))
 
 @app.route('/get/<int:candidate_id>')
 def get_candidate(candidate_id):
     df = read_data()
     person = df[df['id'] == candidate_id].to_dict(orient='records')
     return jsonify(person[0]) if person else jsonify({})
+
+@app.route('/edit/<int:candidate_id>', methods=['GET'])
+def edit_form(candidate_id):
+    df = read_data()
+    person = df[df['id'] == candidate_id]
+    if person.empty:
+        return redirect(url_for('index'))
+    return render_template('edit.html', candidate=person.to_dict(orient='records')[0])
+
 
 @app.route('/edit/<int:candidate_id>', methods=['POST'])
 def edit_candidate(candidate_id):
