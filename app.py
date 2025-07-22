@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates'))
 
 # Path to Excel data file (placed alongside this script)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
