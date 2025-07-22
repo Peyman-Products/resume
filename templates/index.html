@@ -147,9 +147,11 @@
     });
   });
 
-  // View drawer loader
-  document.querySelectorAll('.btn-info').forEach(btn => {
-    btn.addEventListener('click', () => {
+  // View drawer loader - use delegation so new rows work too
+  document.getElementById('candidateTable')
+          .addEventListener('click', e => {
+    const btn = e.target.closest('.btn-info');
+    if (btn) {
       const id = btn.dataset.id;
       fetch(`/get/${id}`)
         .then(res => res.json())
@@ -158,9 +160,11 @@
             const el = document.getElementById('view_' + k);
             if (el) el.innerText = v || '-';
           });
-          new bootstrap.Offcanvas(document.getElementById('viewDrawer')).show();
+          new bootstrap.Offcanvas(
+            document.getElementById('viewDrawer')
+          ).show();
         });
-    });
+    }
   });
 
   // Delete confirmation

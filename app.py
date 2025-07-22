@@ -8,20 +8,22 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, 'candidates.xlsx')
 
-# If file doesn't exist, create with all required columns
-if not os.path.exists(DATA_FILE):
-    df = pd.DataFrame(columns=[
-        'id',
-        'name', 'mobile', 'gender', 'marital_status', 'education', 'major', 'military_status',
-        'job_status', 'can_start_from', 'available_9_to_6', 'telegram_id',
-        'has_portfolio', 'ok_with_task', 'location', 'technical_experience_notes',
-        'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
-        'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
-        'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant'
-    ])
-    df.to_excel(DATA_FILE, index=False)
+# ensure the Excel file exists with the required columns
+def _ensure_file():
+    if not os.path.exists(DATA_FILE):
+        df = pd.DataFrame(columns=[
+            'id',
+            'name', 'mobile', 'gender', 'marital_status', 'education', 'major', 'military_status',
+            'job_status', 'can_start_from', 'available_9_to_6', 'telegram_id',
+            'has_portfolio', 'ok_with_task', 'location', 'technical_experience_notes',
+            'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
+            'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
+            'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant'
+        ])
+        df.to_excel(DATA_FILE, index=False)
 
 def read_data():
+    _ensure_file()
     return pd.read_excel(DATA_FILE)
 
 def write_data(df):
