@@ -16,6 +16,9 @@
       <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabExperience" type="button">Technical Experience</button>
       </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabDesign" type="button">Design Score</button>
+      </li>
     </ul>
 
     <div class="tab-content">
@@ -79,7 +82,12 @@
           </div>
           <div class="col-md-3">
             <label class="form-label">Can Start From</label>
-            <input name="can_start_from" value="{{ candidate.can_start_from }}" type="date" class="form-control">
+            <select name="can_start_from" class="form-select">
+              <option value="">Select</option>
+              <option {% if candidate.can_start_from=='1 Week' %}selected{% endif %}>1 Week</option>
+              <option {% if candidate.can_start_from=='Less than a month' %}selected{% endif %}>Less than a month</option>
+              <option {% if candidate.can_start_from=='More than a month' %}selected{% endif %}>More than a month</option>
+            </select>
           </div>
           <div class="col-md-3">
             <div class="form-check mt-4">
@@ -106,6 +114,10 @@
           <div class="col-md-3">
             <label class="form-label">City / Area in Tehran</label>
             <input name="location" value="{{ candidate.location }}" type="text" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Interviewer Score</label>
+            <input name="interviewer_score" value="{{ candidate.interviewer_score }}" type="number" class="form-control">
           </div>
         </div>
       </div>
@@ -153,6 +165,14 @@
           <div class="col-md-8">
             <label class="form-label">Other notes about technical fit</label>
             <textarea name="technical_experience_notes" class="form-control" rows="8">{{ candidate.technical_experience_notes }}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="tabDesign">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Design Score</label>
+            <input name="design_score" value="{{ candidate.design_score }}" type="number" class="form-control">
           </div>
         </div>
       </div>
