@@ -41,10 +41,7 @@
         <td>{{ c.gender }}</td>
         <td class="action-btns">
           <button class="btn btn-sm btn-info" data-id="{{ c.id }}">View</button>
-          <button class="btn btn-sm btn-warning" data-id="{{ c.id }}"
-                  data-bs-toggle="modal" data-bs-target="#editCandidateModal">
-            Edit
-          </button>
+          <a class="btn btn-sm btn-warning" href="/edit/{{ c.id }}">Edit</a>
           <button class="btn btn-sm btn-danger" data-id="{{ c.id }}"
                   onclick="confirmDelete(this)">
             Delete
@@ -90,24 +87,7 @@
   </div>
 </div>
 
-<!-- Edit Candidate Modal (extend with two‐tab form) -->
-<div class="modal fade" id="editCandidateModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <form id="editForm" method="post" class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Candidate</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <!-- TODO: implement two-tab General Info / Experience form here -->
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+
 
 <!-- View Drawer -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="viewDrawer">
