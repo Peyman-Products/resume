@@ -1,5 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Candidate List - Abriron</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .action-btns button { margin-right: 4px; }
+  </style>
+</head>
+<body class="p-4">
 
-<<<<<<< 1rnuar-codex/fix-view-button-functionality
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3>Candidate List</h3>
@@ -32,10 +42,7 @@
         <td class="action-btns">
           <button class="btn btn-sm btn-info" data-id="{{ c.id }}">View</button>
           <a class="btn btn-sm btn-warning" href="/edit/{{ c.id }}">Edit</a>
-          <button class="btn btn-sm btn-danger" data-id="{{ c.id }}"
-                  onclick="confirmDelete(this)">
-            Delete
-          </button>
+          <button class="btn btn-sm btn-danger" data-id="{{ c.id }}" onclick="confirmDelete(this)">Delete</button>
         </td>
       </tr>
     {% endfor %}
@@ -76,8 +83,6 @@
     </form>
   </div>
 </div>
-
-
 
 <!-- View Drawer -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="viewDrawer">
@@ -138,8 +143,7 @@
   });
 
   // View drawer loader - use delegation so new rows work too
-  document.getElementById('candidateTable')
-          .addEventListener('click', e => {
+  document.getElementById('candidateTable').addEventListener('click', e => {
     const btn = e.target.closest('.btn-info');
     if (btn) {
       const id = btn.dataset.id;
@@ -167,6 +171,3 @@
 </script>
 </body>
 </html>
-=======
->>>>>>> main
-
