@@ -150,8 +150,9 @@
   // View drawer loader - use delegation so new rows work too
   document.getElementById('candidateTable')
           .addEventListener('click', e => {
-    if (e.target.classList.contains('btn-info')) {
-      const id = e.target.dataset.id;
+    const btn = e.target.closest('.btn-info');
+    if (btn) {
+      const id = btn.dataset.id;
       fetch(`/get/${id}`)
         .then(res => res.json())
         .then(data => {
