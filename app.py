@@ -55,7 +55,7 @@ COLUMNS = [
     'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
     'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
     'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant',
-    'interviewer_score', 'design_score', 'look_score', 'resume_file', 'total_score',
+    'interviewer_score', 'design_score', 'look_score', 'portfolio_score', 'previous_work_score', 'resume_file', 'total_score',
     'status',
     'meeting1_date', 'meeting1_day', 'meeting1_time',
     'meeting2_date', 'meeting2_day', 'meeting2_time',
@@ -131,7 +131,7 @@ def compute_total_score(row):
     if str(row.get('ok_with_task', '')) == 'Yes':
         score += 2
 
-    # interviewer, design, and look scores
+    # interviewer, design, look, portfolio and previous work scores
     try:
         score += float(row.get('interviewer_score', 0))
     except ValueError:
@@ -142,6 +142,14 @@ def compute_total_score(row):
         pass
     try:
         score += float(row.get('look_score', 0))
+    except ValueError:
+        pass
+    try:
+        score += float(row.get('portfolio_score', 0))
+    except ValueError:
+        pass
+    try:
+        score += float(row.get('previous_work_score', 0))
     except ValueError:
         pass
 
@@ -182,6 +190,7 @@ def add_candidate():
         'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
         'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
         'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
+        'portfolio_score':'0', 'previous_work_score':'0',
         'resume_file': stored_resume, 'total_score':'',
         'status':'pending',
         'meeting1_date':'', 'meeting1_day':'', 'meeting1_time':'',
