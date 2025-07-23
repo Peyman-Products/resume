@@ -170,6 +170,7 @@
         <p><strong>Major:</strong> <span id="view_major"></span></p>
         <p><strong>Military Status:</strong> <span id="view_military_status"></span></p>
         <p><strong>Job Status:</strong> <span id="view_job_status"></span></p>
+        <p><strong>Years of Experience:</strong> <span id="view_years_of_experience"></span></p>
         <p><strong>Status:</strong> <span id="view_status"></span></p>
         <p><strong>Start From:</strong> <span id="view_can_start_from"></span></p>
         <p><strong>9–6 Available:</strong> <span id="view_available_9_to_6"></span></p>
@@ -197,13 +198,7 @@
             <p><strong>Design Score:</strong> <span id="view_design_score"></span></p>
           </div>
           <div class="tab-pane fade" id="tabMeetings">
-            {% for i in range(1,6) %}
-            <p><strong>Meeting {{ i }}:</strong>
-              <span id="view_meeting{{ i }}_date"></span>,
-              <span id="view_meeting{{ i }}_day"></span>,
-              <span id="view_meeting{{ i }}_time"></span>
-            </p>
-            {% endfor %}
+            <div id="view_meetings_list"></div>
           </div>
         </div>
       </div>
@@ -271,8 +266,18 @@
         .then(res => res.json())
         .then(data => {
           Object.entries(data).forEach(([k, v]) => {
+            if (k === 'meetings') return;
             const el = document.getElementById('view_' + k);
             if (el) el.innerText = v || '-';
+          });
+          const list = document.getElementById('view_meetings_list');
+          list.innerHTML = '';
+          let meetings = [];
+          try { meetings = JSON.parse(data.meetings || '[]'); } catch(e) {}
+          meetings.forEach((m, idx) => {
+            const p = document.createElement('p');
+            p.textContent = `Meeting ${idx+1}: ${m.date || ''} ${m.day || ''} ${m.time || ''} ${m.location || ''} ${m.status || ''}`;
+            list.appendChild(p);
           });
           new bootstrap.Offcanvas(
             document.getElementById('viewDrawer')
