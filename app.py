@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 import pandas as pd
 import os
 
@@ -55,7 +55,7 @@ COLUMNS = [
     'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
     'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
     'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant',
-    'interviewer_score', 'design_score', 'look_score', 'total_score'
+    'interviewer_score', 'design_score', 'look_score', 'resume_file', 'total_score'
 ]
 
 app = Flask(__name__)
@@ -63,6 +63,9 @@ app = Flask(__name__)
 # Path to Excel data file (placed alongside this script)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, 'candidates.xlsx')
+# Directory to store uploaded resumes
+RESUME_DIR = os.path.join(BASE_DIR, 'resumes')
+os.makedirs(RESUME_DIR, exist_ok=True)
 
 # ensure the Excel file exists with the required columns
 def _ensure_file():
@@ -87,6 +90,20 @@ def write_data(df):
 def get_next_id():
     df = read_data()
     return int(df['id'].max() + 1) if not df.empty else 1
+
+def _sanitize_filename(name):
+    return ''.join(c if c.isalnum() else '_' for c in name)
+
+def save_resume_file(file, full_name):
+    """Save uploaded resume file and return stored filename"""
+    if not file or file.filename == '':
+        return ''
+    filename = _sanitize_filename(full_name)
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{filename}{ext}"
+    path = os.path.join(RESUME_DIR, filename)
+    file.save(path)
+    return filename
 
 def compute_total_score(row):
     score = 0
@@ -124,6 +141,10 @@ def compute_total_score(row):
 
     return score
 
+@app.route('/resumes/<path:filename>')
+def get_resume(filename):
+    return send_from_directory(RESUME_DIR, filename, as_attachment=True)
+
 @app.route('/')
 def index():
     df = read_data()
@@ -137,8 +158,10 @@ def index():
 @app.route('/add', methods=['POST'])
 def add_candidate():
     data = request.form
+    resume_file = request.files.get('resume')
     df = read_data()
     new_id = get_next_id()
+    stored_resume = save_resume_file(resume_file, data.get('name', ''))
     new_row = {
         'id': new_id,
         'name': data.get('name', ''),
@@ -152,7 +175,8 @@ def add_candidate():
         'exp_dashboard_b2b':'', 'exp_dynamic_reports':'', 'exp_role_based_access':'',
         'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
         'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
-        'interviewer_score':'0', 'design_score':'0', 'look_score':'0', 'total_score':''
+        'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
+        'resume_file': stored_resume, 'total_score':''
     }
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     write_data(df)
@@ -177,9 +201,13 @@ def edit_form(candidate_id):
 @app.route('/edit/<int:candidate_id>', methods=['POST'])
 def edit_candidate(candidate_id):
     df = read_data()
+    resume_file = request.files.get('resume')
     for key, value in request.form.items():
         if key in df.columns:
             df.loc[df['id'] == candidate_id, key] = value
+    if resume_file and resume_file.filename:
+        stored = save_resume_file(resume_file, request.form.get('name', ''))
+        df.loc[df['id'] == candidate_id, 'resume_file'] = stored
     row = df[df['id'] == candidate_id].iloc[0].to_dict()
     df.loc[df['id'] == candidate_id, 'total_score'] = compute_total_score(row)
     write_data(df)
@@ -188,6 +216,13 @@ def edit_candidate(candidate_id):
 @app.route('/delete/<int:candidate_id>', methods=['POST'])
 def delete_candidate(candidate_id):
     df = read_data()
+    person = df[df['id'] == candidate_id]
+    if not person.empty:
+        resume = person.iloc[0].get('resume_file', '')
+        if resume:
+            path = os.path.join(RESUME_DIR, resume)
+            if os.path.exists(path):
+                os.remove(path)
     df = df[df['id'] != candidate_id]
     write_data(df)
     return redirect(url_for('index'))

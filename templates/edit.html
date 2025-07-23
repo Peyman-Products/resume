@@ -8,7 +8,7 @@
 <body class="p-4">
 <div class="container">
   <h3 class="mb-3">Edit Candidate</h3>
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     <ul class="nav nav-tabs mb-3" id="editTabs" role="tablist">
       <li class="nav-item">
         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabGeneral" type="button">General Info</button>
@@ -122,6 +122,13 @@
           <div class="col-md-3">
             <label class="form-label">Look Score</label>
             <input name="look_score" value="{{ candidate.look_score or 0 }}" type="number" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Resume File</label>
+            <input type="file" name="resume" class="form-control">
+            {% if candidate.resume_file %}
+            <a href="/resumes/{{ candidate.resume_file }}" target="_blank" class="btn btn-link p-0">Current Resume</a>
+            {% endif %}
           </div>
         </div>
       </div>
