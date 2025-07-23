@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 import pandas as pd
 import os
+import json
 
 # scoring maps
 TECH_SCORES = {
@@ -49,6 +50,7 @@ GENERAL_SCORES = {
 
 COLUMNS = [
     'id', 'name', 'mobile', 'gender', 'marital_status', 'education', 'major',
+    'years_of_experience',
     'military_status', 'job_status', 'can_start_from', 'available_9_to_6',
     'telegram_id', 'has_portfolio', 'ok_with_task', 'location',
     'technical_experience_notes',
@@ -56,7 +58,7 @@ COLUMNS = [
     'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
     'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant',
     'interviewer_score', 'design_score', 'look_score', 'portfolio_score', 'previous_work_score', 'resume_file', 'total_score',
-    'status',
+    'status', 'meetings',
     'meeting1_date', 'meeting1_day', 'meeting1_time',
     'meeting2_date', 'meeting2_day', 'meeting2_time',
     'meeting3_date', 'meeting3_day', 'meeting3_time',
@@ -86,6 +88,10 @@ def read_data():
     for col in COLUMNS:
         if col not in df.columns:
             df[col] = ''
+    if 'years_of_experience' in df.columns:
+        df['years_of_experience'] = df['years_of_experience'].fillna(0)
+    if 'meetings' in df.columns:
+        df['meetings'] = df['meetings'].fillna('[]')
     if 'id' in df.columns:
         df['id'] = df['id'].fillna(0).astype(int)
     return df
@@ -153,6 +159,11 @@ def compute_total_score(row):
     except ValueError:
         pass
 
+    try:
+        score += float(row.get('years_of_experience', 0)) * 5
+    except ValueError:
+        pass
+
     return score
 
 @app.route('/resumes/<path:filename>')
@@ -182,7 +193,7 @@ def add_candidate():
         'mobile': data.get('mobile', ''),
         'gender': data.get('gender', ''),
         # the rest remain blank until edit
-        'marital_status':'', 'education':'', 'major':'', 'military_status':'',
+        'marital_status':'', 'education':'', 'major':'', 'years_of_experience':'0', 'military_status':'',
         'job_status':'', 'can_start_from':'', 'available_9_to_6':'',
         'telegram_id':'', 'has_portfolio':'', 'ok_with_task':'',
         'location':'', 'technical_experience_notes':'',
@@ -192,7 +203,7 @@ def add_candidate():
         'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
         'portfolio_score':'0', 'previous_work_score':'0',
         'resume_file': stored_resume, 'total_score':'',
-        'status':'pending',
+        'status':'pending', 'meetings':'[]',
         'meeting1_date':'', 'meeting1_day':'', 'meeting1_time':'',
         'meeting2_date':'', 'meeting2_day':'', 'meeting2_time':'',
         'meeting3_date':'', 'meeting3_day':'', 'meeting3_time':'',
@@ -223,7 +234,26 @@ def edit_form(candidate_id):
 def edit_candidate(candidate_id):
     df = read_data()
     resume_file = request.files.get('resume')
+    # handle dynamic meetings
+    dates = request.form.getlist('meeting_date[]')
+    days = request.form.getlist('meeting_day[]')
+    times = request.form.getlist('meeting_time[]')
+    locs = request.form.getlist('meeting_location[]')
+    statuses = request.form.getlist('meeting_status[]')
+    meetings = []
+    for i in range(len(dates)):
+        meetings.append({
+            'date': dates[i],
+            'day': days[i] if i < len(days) else '',
+            'time': times[i] if i < len(times) else '',
+            'location': locs[i] if i < len(locs) else '',
+            'status': statuses[i] if i < len(statuses) else ''
+        })
+    if 'meetings' in df.columns:
+        df.loc[df['id'] == candidate_id, 'meetings'] = json.dumps(meetings)
     for key, value in request.form.items():
+        if key.endswith('[]'):
+            continue
         if key in df.columns:
             df.loc[df['id'] == candidate_id, key] = value
     if resume_file and resume_file.filename:
