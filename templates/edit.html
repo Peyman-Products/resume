@@ -27,6 +27,10 @@
     <div class="tab-content">
       <div class="tab-pane fade show active" id="tabGeneral">
         <div class="row g-3">
+          <div class="col-12">
+            <h5 class="fw-bold text-primary"><em>Personal Info</em></h5>
+            <hr>
+          </div>
           <div class="col-md-6">
             <label class="form-label">Full Name</label>
             <input name="name" value="{{ candidate.name }}" type="text" class="form-control" required>
@@ -42,6 +46,14 @@
               <option {% if candidate.gender=='Male' %}selected{% endif %}>Male</option>
               <option {% if candidate.gender=='Female' %}selected{% endif %}>Female</option>
             </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Year of Birth</label>
+            <input name="year_of_birth" value="{{ candidate.year_of_birth or 1370 }}" type="number" class="form-control">
+          </div>
+          <div class="col-12 mt-3">
+            <h5 class="fw-bold text-success"><em>Background</em></h5>
+            <hr>
           </div>
           <div class="col-md-3">
             <label class="form-label">Marital Status</label>
@@ -117,6 +129,15 @@
             <input name="telegram_id" value="{{ candidate.telegram_id }}" type="text" class="form-control">
           </div>
           <div class="col-md-3">
+            <label class="form-label">Source of News</label>
+            <select name="source_of_news" class="form-select">
+              <option value="Linkedin" {% if candidate.source_of_news=='Linkedin' %}selected{% endif %}>Linkedin</option>
+              <option value="Connections" {% if candidate.source_of_news=='Connections' %}selected{% endif %}>Connections</option>
+              <option value="Jobinja" {% if candidate.source_of_news=='Jobinja' or candidate.source_of_news=='' %}selected{% endif %}>Jobinja</option>
+              <option value="Jobvision" {% if candidate.source_of_news=='Jobvision' %}selected{% endif %}>Jobvision</option>
+            </select>
+          </div>
+          <div class="col-md-3">
             <div class="form-check mt-4">
               <input name="has_portfolio" class="form-check-input" type="checkbox" value="Yes" {% if candidate.has_portfolio=='Yes' %}checked{% endif %}>
               <label class="form-check-label">Has Portfolio?</label>
@@ -135,6 +156,10 @@
               <input name="ok_with_task" class="form-check-input" type="checkbox" value="Yes" {% if candidate.ok_with_task=='Yes' %}checked{% endif %}>
               <label class="form-check-label">Okay with Design Task?</label>
             </div>
+          </div>
+          <div class="col-12 mt-3">
+            <h5 class="fw-bold text-primary"><em>Scores</em></h5>
+            <hr>
           </div>
           <div class="col-md-3">
             <label class="form-label">City / Area in Tehran</label>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Candidate View</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">{{ candidate.name }}</h3>
+    <div>
+      <a class="btn btn-warning me-2" href="/edit/{{ candidate.id }}">Edit</a>
+      <form action="/delete/{{ candidate.id }}" method="post" class="d-inline" onsubmit="return confirm('Delete this candidate?');">
+        <button class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+  <p><strong>Mobile:</strong> {{ candidate.mobile }}</p>
+  <p><strong>Gender:</strong> {{ candidate.gender }}</p>
+  <p><strong>Status:</strong> {{ candidate.status }}</p>
+
+  <ul class="nav nav-tabs mb-3" id="viewTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabGeneral" type="button">General Info</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabExperience" type="button">Experience</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabDesign" type="button">Design Score</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabMeetings" type="button">Meetings</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="tabGeneral">
+      <p><strong>Marital Status:</strong> {{ candidate.marital_status or '-' }}</p>
+      <p><strong>Education:</strong> {{ candidate.education or '-' }}</p>
+      <p><strong>Major:</strong> {{ candidate.major or '-' }}</p>
+      <p><strong>Year of Birth:</strong> {{ candidate.year_of_birth or '-' }}</p>
+      <p><strong>Source of News:</strong> {{ candidate.source_of_news or '-' }}</p>
+      <p><strong>Military Status:</strong> {{ candidate.military_status or '-' }}</p>
+      <p><strong>Job Status:</strong> {{ candidate.job_status or '-' }}</p>
+      <p><strong>Years of Experience:</strong> {{ candidate.years_of_experience or '-' }}</p>
+      <p><strong>Start From:</strong> {{ candidate.can_start_from or '-' }}</p>
+      <p><strong>9-6 Available:</strong> {{ candidate.available_9_to_6 or '-' }}</p>
+      <p><strong>Telegram ID:</strong> {{ candidate.telegram_id or '-' }}</p>
+      <p><strong>Location:</strong> {{ candidate.location or '-' }}</p>
+      <p><strong>Interviewer Score:</strong> {{ candidate.interviewer_score or '-' }}</p>
+      <p><strong>Look Score:</strong> {{ candidate.look_score or '-' }}</p>
+      <p><strong>Portfolio Score:</strong> {{ candidate.portfolio_score or '-' }}</p>
+      <p><strong>Previous Work Score:</strong> {{ candidate.previous_work_score or '-' }}</p>
+      <p><strong>Total Score:</strong> {{ candidate.total_score or '-' }}</p>
+    </div>
+    <div class="tab-pane fade" id="tabExperience">
+      <p><strong>B2B Dashboard Exp:</strong> {{ candidate.exp_dashboard_b2b or '-' }}</p>
+      <p><strong>Dynamic Reports:</strong> {{ candidate.exp_dynamic_reports or '-' }}</p>
+      <p><strong>Role-Based UI:</strong> {{ candidate.exp_role_based_access or '-' }}</p>
+      <p><strong>POS/Mobile Exp:</strong> {{ candidate.exp_pos_mobile or '-' }}</p>
+      <p><strong>Data Sync:</strong> {{ candidate.exp_data_sync or '-' }}</p>
+      <p><strong>Multi-step Forms:</strong> {{ candidate.exp_multistep_forms or '-' }}</p>
+      <p><strong>Low-Literate Users:</strong> {{ candidate.exp_low_digital_users or '-' }}</p>
+      <p><strong>Multilingual:</strong> {{ candidate.exp_multilingual or '-' }}</p>
+      <p><strong>Portfolio Relevant:</strong> {{ candidate.exp_portfolio_relevant or '-' }}</p>
+      <p><strong>Technical Notes:</strong> {{ candidate.technical_experience_notes or '-' }}</p>
+    </div>
+    <div class="tab-pane fade" id="tabDesign">
+      <p><strong>Design Score:</strong> {{ candidate.design_score or '-' }}</p>
+    </div>
+    <div class="tab-pane fade" id="tabMeetings">
+      {% for m in candidate.meetings_list %}
+      <p>Meeting {{ loop.index }}: {{ m.date }} {{ m.day }} {{ m.time }} {{ m.location }} {{ m.status }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
