@@ -19,6 +19,9 @@
       <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabDesign" type="button">Design Score</button>
       </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabMeetings" type="button">Meetings</button>
+      </li>
     </ul>
 
     <div class="tab-content">
@@ -78,6 +81,16 @@
               <option {% if candidate.job_status=='Employed' %}selected{% endif %}>Employed</option>
               <option {% if candidate.job_status=='Freelancer' %}selected{% endif %}>Freelancer</option>
               <option {% if candidate.job_status=='Unemployed' %}selected{% endif %}>Unemployed</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+              <option value="pending" {% if candidate.status=='pending' or candidate.status=='' %}selected{% endif %}>pending</option>
+              <option value="called" {% if candidate.status=='called' %}selected{% endif %}>called</option>
+              <option value="Online meeting" {% if candidate.status=='Online meeting' %}selected{% endif %}>Online meeting</option>
+              <option value="offline meeting" {% if candidate.status=='offline meeting' %}selected{% endif %}>offline meeting</option>
+              <option value="rejected" {% if candidate.status=='rejected' %}selected{% endif %}>rejected</option>
             </select>
           </div>
           <div class="col-md-3">
@@ -185,6 +198,26 @@
             <label class="form-label">Design Score</label>
             <input name="design_score" value="{{ candidate.design_score or 0 }}" type="number" class="form-control">
           </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="tabMeetings">
+        <div class="row g-3">
+          {% for i in range(1,6) %}
+          <div class="col-12 d-flex align-items-end mb-2">
+            <div class="me-2">
+              <label class="form-label">Date {{ i }}</label>
+              <input type="text" name="meeting{{ i }}_date" value="{{ candidate['meeting' ~ i ~ '_date'] }}" class="form-control">
+            </div>
+            <div class="me-2">
+              <label class="form-label">Day</label>
+              <input type="text" name="meeting{{ i }}_day" value="{{ candidate['meeting' ~ i ~ '_day'] }}" class="form-control">
+            </div>
+            <div>
+              <label class="form-label">Time</label>
+              <input type="time" name="meeting{{ i }}_time" value="{{ candidate['meeting' ~ i ~ '_time'] }}" class="form-control">
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
