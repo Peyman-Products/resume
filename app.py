@@ -49,7 +49,8 @@ GENERAL_SCORES = {
 }
 
 COLUMNS = [
-    'id', 'name', 'mobile', 'gender', 'marital_status', 'education', 'major',
+    'id', 'name', 'mobile', 'gender', 'source_of_news', 'year_of_birth',
+    'marital_status', 'education', 'major',
     'years_of_experience',
     'military_status', 'job_status', 'can_start_from', 'available_9_to_6',
     'telegram_id', 'has_portfolio', 'ok_with_task', 'location',
@@ -94,6 +95,10 @@ def read_data():
         df['meetings'] = df['meetings'].fillna('[]')
     if 'id' in df.columns:
         df['id'] = df['id'].fillna(0).astype(int)
+    if 'year_of_birth' in df.columns:
+        df['year_of_birth'] = df['year_of_birth'].fillna(1370)
+    if 'source_of_news' in df.columns:
+        df['source_of_news'] = df['source_of_news'].fillna('Jobinja')
     return df
 
 def write_data(df):
@@ -192,6 +197,8 @@ def add_candidate():
         'name': data.get('name', ''),
         'mobile': data.get('mobile', ''),
         'gender': data.get('gender', ''),
+        'source_of_news': 'Jobinja',
+        'year_of_birth': '1370',
         # the rest remain blank until edit
         'marital_status':'', 'education':'', 'major':'', 'years_of_experience':'0', 'military_status':'',
         'job_status':'', 'can_start_from':'', 'available_9_to_6':'',
@@ -233,6 +240,22 @@ def edit_form(candidate_id):
     if person.empty:
         return redirect(url_for('index'))
     return render_template('edit.html', candidate=person.to_dict(orient='records')[0])
+
+
+@app.route('/view/<int:candidate_id>')
+def view_candidate(candidate_id):
+    df = read_data()
+    person = df[df['id'] == candidate_id]
+    if person.empty:
+        return redirect(url_for('index'))
+    candidate = person.to_dict(orient='records')[0]
+    meetings = []
+    try:
+        meetings = json.loads(candidate.get('meetings', '[]'))
+    except Exception:
+        meetings = []
+    candidate['meetings_list'] = meetings
+    return render_template('view.html', candidate=candidate)
 
 
 @app.route('/edit/<int:candidate_id>', methods=['POST'])
