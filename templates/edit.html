@@ -117,7 +117,11 @@
           </div>
           <div class="col-md-3">
             <label class="form-label">Interviewer Score</label>
-            <input name="interviewer_score" value="{{ candidate.interviewer_score }}" type="number" class="form-control">
+            <input name="interviewer_score" value="{{ candidate.interviewer_score or 0 }}" type="number" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Look Score</label>
+            <input name="look_score" value="{{ candidate.look_score or 0 }}" type="number" class="form-control">
           </div>
         </div>
       </div>
@@ -172,7 +176,7 @@
         <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label">Design Score</label>
-            <input name="design_score" value="{{ candidate.design_score }}" type="number" class="form-control">
+            <input name="design_score" value="{{ candidate.design_score or 0 }}" type="number" class="form-control">
           </div>
         </div>
       </div>
