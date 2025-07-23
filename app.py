@@ -55,7 +55,13 @@ COLUMNS = [
     'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
     'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
     'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant',
-    'interviewer_score', 'design_score', 'look_score', 'resume_file', 'total_score'
+    'interviewer_score', 'design_score', 'look_score', 'resume_file', 'total_score',
+    'status',
+    'meeting1_date', 'meeting1_day', 'meeting1_time',
+    'meeting2_date', 'meeting2_day', 'meeting2_time',
+    'meeting3_date', 'meeting3_day', 'meeting3_time',
+    'meeting4_date', 'meeting4_day', 'meeting4_time',
+    'meeting5_date', 'meeting5_day', 'meeting5_time'
 ]
 
 app = Flask(__name__)
@@ -176,7 +182,13 @@ def add_candidate():
         'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
         'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
         'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
-        'resume_file': stored_resume, 'total_score':''
+        'resume_file': stored_resume, 'total_score':'',
+        'status':'pending',
+        'meeting1_date':'', 'meeting1_day':'', 'meeting1_time':'',
+        'meeting2_date':'', 'meeting2_day':'', 'meeting2_time':'',
+        'meeting3_date':'', 'meeting3_day':'', 'meeting3_time':'',
+        'meeting4_date':'', 'meeting4_day':'', 'meeting4_time':'',
+        'meeting5_date':'', 'meeting5_day':'', 'meeting5_time':''
     }
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     write_data(df)
