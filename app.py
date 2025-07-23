@@ -218,8 +218,13 @@ def add_candidate():
 @app.route('/get/<int:candidate_id>')
 def get_candidate(candidate_id):
     df = read_data()
-    person = df[df['id'] == candidate_id].to_dict(orient='records')
-    return jsonify(person[0]) if person else jsonify({})
+    person = df[df['id'] == candidate_id]
+    if person.empty:
+        return jsonify({})
+    record = person.to_dict(orient='records')[0]
+    # convert any non-standard values (e.g. numpy types, NaN) to strings
+    cleaned = json.loads(json.dumps(record, default=str))
+    return jsonify(cleaned)
 
 @app.route('/edit/<int:candidate_id>', methods=['GET'])
 def edit_form(candidate_id):
