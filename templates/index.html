@@ -139,13 +139,15 @@
   </div>
 </div>
 
-<!-- View Modal -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="viewDrawer" aria-labelledby="viewDrawerLabel">
-  <div class="offcanvas-header">
-    <h5 id="viewDrawerLabel" class="offcanvas-title">Candidate Details</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
+<!-- View Candidate Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="viewModalLabel" class="modal-title">Candidate Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
         <ul class="nav nav-tabs mb-3">
           <li class="nav-item">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabGeneral">General Info</button>
@@ -162,37 +164,37 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade show active" id="tabGeneral">
-        <p><strong>Name:</strong> <span id="view_name"></span></p>
-        <p><strong>Mobile:</strong> <span id="view_mobile"></span></p>
-        <p><strong>Gender:</strong> <span id="view_gender"></span></p>
-        <p><strong>Marital Status:</strong> <span id="view_marital_status"></span></p>
-        <p><strong>Education:</strong> <span id="view_education"></span></p>
-        <p><strong>Major:</strong> <span id="view_major"></span></p>
-        <p><strong>Military Status:</strong> <span id="view_military_status"></span></p>
-        <p><strong>Job Status:</strong> <span id="view_job_status"></span></p>
-        <p><strong>Years of Experience:</strong> <span id="view_years_of_experience"></span></p>
-        <p><strong>Status:</strong> <span id="view_status"></span></p>
-        <p><strong>Start From:</strong> <span id="view_can_start_from"></span></p>
-        <p><strong>9–6 Available:</strong> <span id="view_available_9_to_6"></span></p>
-        <p><strong>Telegram ID:</strong> <span id="view_telegram_id"></span></p>
-        <p><strong>Location:</strong> <span id="view_location"></span></p>
-        <p><strong>Interviewer Score:</strong> <span id="view_interviewer_score"></span></p>
-        <p><strong>Look Score:</strong> <span id="view_look_score"></span></p>
-        <p><strong>Portfolio Score:</strong> <span id="view_portfolio_score"></span></p>
-        <p><strong>Previous Work Score:</strong> <span id="view_previous_work_score"></span></p>
-        <p><strong>Total Score:</strong> <span id="view_total_score"></span></p>
-      </div>
-      <div class="tab-pane fade" id="tabExperience">
-        <p><strong>B2B Dashboard Exp:</strong> <span id="view_exp_dashboard_b2b"></span></p>
-        <p><strong>Dynamic Reports:</strong> <span id="view_exp_dynamic_reports"></span></p>
-        <p><strong>Role-Based UI:</strong> <span id="view_exp_role_based_access"></span></p>
-        <p><strong>POS/Mobile Exp:</strong> <span id="view_exp_pos_mobile"></span></p>
-        <p><strong>Data Sync:</strong> <span id="view_exp_data_sync"></span></p>
-        <p><strong>Multi-step Forms:</strong> <span id="view_exp_multistep_forms"></span></p>
-        <p><strong>Low-Literate Users:</strong> <span id="view_exp_low_digital_users"></span></p>
-        <p><strong>Multilingual:</strong> <span id="view_exp_multilingual"></span></p>
-        <p><strong>Portfolio Relevant:</strong> <span id="view_exp_portfolio_relevant"></span></p>
-        <p><strong>Technical Notes:</strong> <span id="view_technical_experience_notes"></span></p>
+            <p><strong>Name:</strong> <span id="view_name"></span></p>
+            <p><strong>Mobile:</strong> <span id="view_mobile"></span></p>
+            <p><strong>Gender:</strong> <span id="view_gender"></span></p>
+            <p><strong>Marital Status:</strong> <span id="view_marital_status"></span></p>
+            <p><strong>Education:</strong> <span id="view_education"></span></p>
+            <p><strong>Major:</strong> <span id="view_major"></span></p>
+            <p><strong>Military Status:</strong> <span id="view_military_status"></span></p>
+            <p><strong>Job Status:</strong> <span id="view_job_status"></span></p>
+            <p><strong>Years of Experience:</strong> <span id="view_years_of_experience"></span></p>
+            <p><strong>Status:</strong> <span id="view_status"></span></p>
+            <p><strong>Start From:</strong> <span id="view_can_start_from"></span></p>
+            <p><strong>9–6 Available:</strong> <span id="view_available_9_to_6"></span></p>
+            <p><strong>Telegram ID:</strong> <span id="view_telegram_id"></span></p>
+            <p><strong>Location:</strong> <span id="view_location"></span></p>
+            <p><strong>Interviewer Score:</strong> <span id="view_interviewer_score"></span></p>
+            <p><strong>Look Score:</strong> <span id="view_look_score"></span></p>
+            <p><strong>Portfolio Score:</strong> <span id="view_portfolio_score"></span></p>
+            <p><strong>Previous Work Score:</strong> <span id="view_previous_work_score"></span></p>
+            <p><strong>Total Score:</strong> <span id="view_total_score"></span></p>
+          </div>
+          <div class="tab-pane fade" id="tabExperience">
+            <p><strong>B2B Dashboard Exp:</strong> <span id="view_exp_dashboard_b2b"></span></p>
+            <p><strong>Dynamic Reports:</strong> <span id="view_exp_dynamic_reports"></span></p>
+            <p><strong>Role-Based UI:</strong> <span id="view_exp_role_based_access"></span></p>
+            <p><strong>POS/Mobile Exp:</strong> <span id="view_exp_pos_mobile"></span></p>
+            <p><strong>Data Sync:</strong> <span id="view_exp_data_sync"></span></p>
+            <p><strong>Multi-step Forms:</strong> <span id="view_exp_multistep_forms"></span></p>
+            <p><strong>Low-Literate Users:</strong> <span id="view_exp_low_digital_users"></span></p>
+            <p><strong>Multilingual:</strong> <span id="view_exp_multilingual"></span></p>
+            <p><strong>Portfolio Relevant:</strong> <span id="view_exp_portfolio_relevant"></span></p>
+            <p><strong>Technical Notes:</strong> <span id="view_technical_experience_notes"></span></p>
           </div>
           <div class="tab-pane fade" id="tabDesign">
             <p><strong>Design Score:</strong> <span id="view_design_score"></span></p>
@@ -204,6 +206,7 @@
       </div>
     </div>
   </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -279,9 +282,7 @@
             p.textContent = `Meeting ${idx+1}: ${m.date || ''} ${m.day || ''} ${m.time || ''} ${m.location || ''} ${m.status || ''}`;
             list.appendChild(p);
           });
-          new bootstrap.Offcanvas(
-            document.getElementById('viewDrawer')
-          ).show();
+          new bootstrap.Modal(document.getElementById("viewModal")).show();
         });
     }
   });
