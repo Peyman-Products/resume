@@ -152,7 +152,7 @@ def add_candidate():
         'exp_dashboard_b2b':'', 'exp_dynamic_reports':'', 'exp_role_based_access':'',
         'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
         'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
-        'interviewer_score':'', 'design_score':'0', 'look_score':'0', 'total_score':''
+        'interviewer_score':'0', 'design_score':'0', 'look_score':'0', 'total_score':''
     }
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     write_data(df)

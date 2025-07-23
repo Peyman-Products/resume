@@ -117,7 +117,7 @@
           </div>
           <div class="col-md-3">
             <label class="form-label">Interviewer Score</label>
-            <input name="interviewer_score" value="{{ candidate.interviewer_score }}" type="number" class="form-control">
+            <input name="interviewer_score" value="{{ candidate.interviewer_score or 0 }}" type="number" class="form-control">
           </div>
           <div class="col-md-3">
             <label class="form-label">Look Score</label>
