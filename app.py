@@ -77,6 +77,8 @@ def read_data():
     for col in COLUMNS:
         if col not in df.columns:
             df[col] = ''
+    if 'id' in df.columns:
+        df['id'] = df['id'].fillna(0).astype(int)
     return df
 
 def write_data(df):
@@ -125,6 +127,7 @@ def index():
     for idx, row in df.iterrows():
         df.at[idx, 'total_score'] = compute_total_score(row)
     write_data(df)
+    df['id'] = df['id'].astype(int)
     return render_template('index.html', candidates=df.to_dict(orient='records'))
 
 @app.route('/add', methods=['POST'])

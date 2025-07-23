@@ -23,6 +23,27 @@
     <input type="text" id="searchInput" class="form-control" placeholder="Search by name or mobile...">
   </div>
 
+  <div class="row g-2 mb-3">
+    <div class="col-md-3">
+      <select id="sortSelect" class="form-select">
+        <option value="">Sort By</option>
+        <option value="gender_asc">Gender A-Z</option>
+        <option value="gender_desc">Gender Z-A</option>
+        <option value="score_asc">Score Low to High</option>
+        <option value="score_desc">Score High to Low</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" id="minScore" class="form-control" placeholder="Min Score">
+    </div>
+    <div class="col-md-2">
+      <input type="number" id="maxScore" class="form-control" placeholder="Max Score">
+    </div>
+    <div class="col-md-2">
+      <button id="filterBtn" class="btn btn-secondary w-100">Apply</button>
+    </div>
+  </div>
+
   <!-- Candidate Table -->
   <table class="table table-bordered table-striped" id="candidateTable">
     <thead class="table-light">
@@ -174,7 +195,47 @@
       const mob  = row.cells[1].innerText.toLowerCase();
       row.style.display = (name.includes(q) || mob.includes(q)) ? '' : 'none';
     });
+    sortAndFilter();
   });
+
+  document.getElementById('sortSelect').addEventListener('change', sortAndFilter);
+  document.getElementById('filterBtn').addEventListener('click', sortAndFilter);
+
+  function sortAndFilter() {
+    const sortVal = document.getElementById('sortSelect').value;
+    const min = parseFloat(document.getElementById('minScore').value);
+    const max = parseFloat(document.getElementById('maxScore').value);
+
+    const rows = Array.from(document.querySelectorAll('#candidateTable tbody tr'));
+    rows.sort((a, b) => {
+      if (sortVal === 'gender_asc' || sortVal === 'gender_desc') {
+        const aG = a.cells[2].innerText.toLowerCase();
+        const bG = b.cells[2].innerText.toLowerCase();
+        if (aG < bG) return sortVal === 'gender_asc' ? -1 : 1;
+        if (aG > bG) return sortVal === 'gender_asc' ? 1 : -1;
+        return 0;
+      } else if (sortVal === 'score_asc' || sortVal === 'score_desc') {
+        const aS = parseFloat(a.cells[3].innerText) || 0;
+        const bS = parseFloat(b.cells[3].innerText) || 0;
+        return sortVal === 'score_asc' ? aS - bS : bS - aS;
+      }
+      return 0;
+    });
+
+    const tbody = document.querySelector('#candidateTable tbody');
+    tbody.innerHTML = '';
+    rows.forEach(row => {
+      const score = parseFloat(row.cells[3].innerText) || 0;
+      if (!isNaN(min) && score < min) {
+        row.style.display = 'none';
+      } else if (!isNaN(max) && score > max) {
+        row.style.display = 'none';
+      } else {
+        if (row.style.display !== 'none') row.style.display = '';
+      }
+      tbody.appendChild(row);
+    });
+  }
 
   // View modal loader - use delegation so new rows work too
   document.getElementById('candidateTable').addEventListener('click', e => {
