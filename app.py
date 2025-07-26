@@ -185,6 +185,17 @@ def index():
     df['id'] = df['id'].astype(int)
     return render_template('index.html', candidates=df.to_dict(orient='records'))
 
+# API endpoint for frontend
+@app.route('/api/candidates', methods=['GET'])
+def api_candidates():
+    """Return all candidates as JSON."""
+    df = read_data()
+    for idx, row in df.iterrows():
+        df.at[idx, 'total_score'] = compute_total_score(row)
+    df['id'] = df['id'].astype(int)
+    result = json.loads(json.dumps(df.to_dict(orient='records'), default=str))
+    return jsonify(result)
+
 @app.route('/add', methods=['POST'])
 def add_candidate():
     data = request.form
