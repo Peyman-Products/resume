@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
+from flask_cors import CORS
 import pandas as pd
 import os
 import json
@@ -68,6 +69,7 @@ COLUMNS = [
 ]
 
 app = Flask(__name__)
+CORS(app)
 
 # Path to Excel data file (placed alongside this script)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
