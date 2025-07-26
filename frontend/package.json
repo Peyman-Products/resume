@@ -15,7 +15,8 @@
     "@mui/material": "latest",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
-    "@mui/icons-material": "latest"
+    "@mui/icons-material": "latest",
+    "@mui/x-data-grid": "latest"
   },
   "devDependencies": {
     "typescript": "latest",
