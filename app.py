@@ -195,7 +195,9 @@ def api_candidates():
     for idx, row in df.iterrows():
         df.at[idx, 'total_score'] = compute_total_score(row)
     df['id'] = df['id'].astype(int)
-    result = json.loads(json.dumps(df.to_dict(orient='records'), default=str))
+    # Replace NaN values with None so the JSON is valid
+    df = df.where(pd.notnull(df), None)
+    result = df.to_dict(orient='records')
     return jsonify(result)
 
 @app.route('/add', methods=['POST'])
