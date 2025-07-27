@@ -78,6 +78,18 @@ DATA_FILE = os.path.join(BASE_DIR, 'candidates.xlsx')
 RESUME_DIR = os.path.join(BASE_DIR, 'resumes')
 os.makedirs(RESUME_DIR, exist_ok=True)
 
+# Scoring configuration file per position
+SCORING_CONFIG_FILE = os.path.join(BASE_DIR, 'scoring_config.json')
+
+def load_scoring_config():
+    if not os.path.exists(SCORING_CONFIG_FILE):
+        return {}
+    with open(SCORING_CONFIG_FILE, 'r') as f:
+        try:
+            return json.load(f)
+        except Exception:
+            return {}
+
 # ensure the Excel file exists with the required columns
 def _ensure_file():
     if not os.path.exists(DATA_FILE):
@@ -207,6 +219,20 @@ def api_candidates():
     # ensure all values are JSON serializable
     cleaned = json.loads(json.dumps(result, default=str))
     return jsonify(cleaned)
+
+
+@app.route('/api/weights/<position>', methods=['GET'])
+def api_position_weights(position):
+    """Return the total scoring weight for a given position."""
+    config = load_scoring_config()
+    role_cfg = config.get(position, {})
+    total = 0
+    for val in role_cfg.values():
+        try:
+            total += float(val)
+        except (TypeError, ValueError):
+            continue
+    return jsonify({"position": position, "total_weight": total})
 
 @app.route('/add', methods=['POST'])
 def add_candidate():

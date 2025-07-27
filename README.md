@@ -91,4 +91,9 @@ for the general categories such as education or availability.
    delete action appears as a trash bin icon.
 5. Use the **Add** button to register a new candidate in the selected list.
 
+### Scoring Weights API
+
+Use `/api/weights/<position>` to retrieve the total weight defined for a role in
+`scoring_config.json`.
+
 

@@ -1,0 +1,12 @@
+{
+  "golang": {
+    "exp_grpc": 5,
+    "exp_microservices": 6,
+    "exp_unit_testing": 4
+  },
+  "product_designer": {
+    "exp_figma": 5,
+    "exp_user_research": 6,
+    "exp_prototyping": 4
+  }
+}
