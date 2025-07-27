@@ -1,12 +1,34 @@
 {
-  "golang": {
-    "exp_grpc": 5,
-    "exp_microservices": 6,
-    "exp_unit_testing": 4
+  "positions": {
+    "golang": {
+      "name": "Golang Developer",
+      "experience": {
+        "exp_grpc": {"label": "gRPC services", "points": 5},
+        "exp_microservices": {"label": "Microservices", "points": 6},
+        "exp_unit_testing": {"label": "Unit Testing", "points": 4}
+      }
+    },
+    "designer": {
+      "name": "Product Designer",
+      "experience": {
+        "exp_figma": {"label": "Figma", "points": 4},
+        "exp_user_testing": {"label": "User Testing", "points": 6}
+      }
+    }
   },
-  "product_designer": {
-    "exp_figma": 5,
-    "exp_user_research": 6,
-    "exp_prototyping": 4
+  "global": {
+    "gender": {"male": -3, "female": 1},
+    "education": {"bachelor": 1, "master": 2},
+    "military_status": {"completed": 2, "exempt": 1, "in_progress": -4},
+    "job_status": {"unemployed": 1, "freelancer": 0, "employed": -1},
+    "availability": {"1_week": 5, "less_than_month": 2, "more_than_month": -5},
+    "reviewer_weights": {
+      "interview_score": 1,
+      "design_score": 1,
+      "look_score": 1,
+      "portfolio_score": 1,
+      "previous_work_score": 1
+    },
+    "exp_per_year": 5
   }
 }

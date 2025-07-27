@@ -61,6 +61,8 @@ npm start
 
 - Access `http://localhost:3000` to view the candidate list rendered using Material UI components.
 - Use the backend endpoints defined in `app.py` to add, edit or delete candidates.
+- The list of available positions can be retrieved via `GET /api/positions` which
+  returns an array of objects containing `id` and `name`.
 
 ## Candidate Types and Admin Area
 
@@ -76,11 +78,10 @@ score and meeting history.
 
 ### Technical Experience by Position
 
-Each position has its own set of technical experience questions. The default
-scoring for these questions lives in the backend (see `TECH_SCORES` in
-`app.py`). An admin interface allows these questions and their score values to
-be modified per position. This interface can also be used to adjust the scores
-for the general categories such as education or availability.
+Each position has its own set of technical experience questions which are stored
+in `scoring_config.json`. The admin interface allows these questions and their
+score values to be modified per position as well as the global scoring rules
+(education, availability, reviewer weights, etc.).
 
 ### Typical User Flow
 

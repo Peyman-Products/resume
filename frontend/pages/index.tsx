@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Typography, CircularProgress, Button, Grid } from '@mui/material';
+import { Container, Typography, CircularProgress, Button, Grid, Box } from '@mui/material';
 import Head from 'next/head';
 
 export default function Home() {
   const router = useRouter();
-  const [positions, setPositions] = useState<string[]>([]);
+  interface Pos { id: string; name: string }
+  const [positions, setPositions] = useState<Pos[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,17 +27,18 @@ export default function Home() {
       <Head>
         <title>Select Position</title>
       </Head>
-      <Typography variant="h4" gutterBottom>
-        Choose Position
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h4">Choose Position</Typography>
+        <Button onClick={() => router.push('/admin')}>Admin</Button>
+      </Box>
       {loading ? (
         <CircularProgress />
       ) : (
         <Grid container spacing={2}>
           {positions.map((p) => (
-            <Grid item key={p}>
-              <Button variant="outlined" onClick={() => goto(p)}>
-                {p}
+            <Grid item key={p.id}>
+              <Button variant="outlined" onClick={() => goto(p.id)}>
+                {p.name}
               </Button>
             </Grid>
           ))}
