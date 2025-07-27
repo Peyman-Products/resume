@@ -15,6 +15,12 @@ TECH_SCORES = {
     'exp_low_digital_users': 5,
     'exp_multilingual': 2,
     'exp_portfolio_relevant': 2,
+    'exp_grpc': 5,
+    'exp_microservices': 6,
+    'exp_unit_testing': 4,
+    'exp_figma': 5,
+    'exp_user_research': 6,
+    'exp_prototyping': 4,
 }
 
 GENERAL_SCORES = {
@@ -50,7 +56,7 @@ GENERAL_SCORES = {
 }
 
 COLUMNS = [
-    'id', 'name', 'mobile', 'gender', 'source_of_news', 'year_of_birth',
+    'id', 'name', 'mobile', 'gender', 'position_type', 'source_of_news', 'year_of_birth',
     'marital_status', 'education', 'major',
     'years_of_experience',
     'military_status', 'job_status', 'can_start_from', 'available_9_to_6',
@@ -59,6 +65,8 @@ COLUMNS = [
     'exp_dashboard_b2b', 'exp_dynamic_reports', 'exp_role_based_access',
     'exp_pos_mobile', 'exp_data_sync', 'exp_multistep_forms',
     'exp_low_digital_users', 'exp_multilingual', 'exp_portfolio_relevant',
+    'exp_grpc', 'exp_microservices', 'exp_unit_testing',
+    'exp_figma', 'exp_user_research', 'exp_prototyping',
     'interviewer_score', 'design_score', 'look_score', 'portfolio_score', 'previous_work_score', 'resume_file', 'total_score',
     'status', 'meetings',
     'meeting1_date', 'meeting1_day', 'meeting1_time',
@@ -149,6 +157,14 @@ def compute_total_score(row):
         if str(row.get(field, '')).strip() == 'Yes':
             score += pts
 
+    # position specific experience
+    config = load_scoring_config()
+    role = str(row.get('position_type', '')).lower()
+    role_cfg = config.get(role, {})
+    for field, pts in role_cfg.items():
+        if str(row.get(field, '')).strip() == 'Yes':
+            score += pts
+
     # general items
     for field, mapping in GENERAL_SCORES.items():
         val = str(row.get(field, '')).strip()
@@ -206,17 +222,55 @@ def index():
     return render_template('index.html', candidates=df.to_dict(orient='records'))
 
 # API endpoint for frontend
-@app.route('/api/candidates', methods=['GET'])
+@app.route('/api/candidates', methods=['GET', 'POST'])
 def api_candidates():
-    """Return all candidates as JSON."""
+    """Return or add candidates."""
+    if request.method == 'POST':
+        data = request.form
+        resume_file = request.files.get('resume')
+        df = read_data()
+        new_id = get_next_id()
+        stored_resume = save_resume_file(resume_file, data.get('name', ''))
+        new_row = {
+            'id': new_id,
+            'name': data.get('name', ''),
+            'mobile': data.get('mobile', ''),
+            'gender': data.get('gender', ''),
+            'position_type': data.get('position_type', ''),
+            'source_of_news': 'Jobinja',
+            'year_of_birth': '1370',
+            'marital_status':'', 'education':'', 'major':'', 'years_of_experience':'0', 'military_status':'',
+            'job_status':'', 'can_start_from':'', 'available_9_to_6':'',
+            'telegram_id':'', 'has_portfolio':'', 'ok_with_task':'',
+            'location':'', 'technical_experience_notes':'',
+            'exp_dashboard_b2b':'', 'exp_dynamic_reports':'', 'exp_role_based_access':'',
+            'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
+            'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
+            'exp_grpc':'', 'exp_microservices':'', 'exp_unit_testing':'',
+            'exp_figma':'', 'exp_user_research':'', 'exp_prototyping':'',
+            'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
+            'portfolio_score':'0', 'previous_work_score':'0',
+            'resume_file': stored_resume, 'total_score':'',
+            'status':'pending', 'meetings':'[]',
+            'meeting1_date':'', 'meeting1_day':'', 'meeting1_time':'',
+            'meeting2_date':'', 'meeting2_day':'', 'meeting2_time':'',
+            'meeting3_date':'', 'meeting3_day':'', 'meeting3_time':'',
+            'meeting4_date':'', 'meeting4_day':'', 'meeting4_time':'',
+            'meeting5_date':'', 'meeting5_day':'', 'meeting5_time':''
+        }
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        write_data(df)
+        return jsonify({'id': new_id}), 201
+
     df = read_data()
+    position_filter = request.args.get('position')
+    if position_filter is not None:
+        df = df[df.get('position_type', '').str.lower() == position_filter.lower()]
     for idx, row in df.iterrows():
         df.at[idx, 'total_score'] = compute_total_score(row)
     df['id'] = df['id'].astype(int)
-    # Replace NaN values with None so the JSON is valid
     df = df.where(pd.notnull(df), None)
     result = df.to_dict(orient='records')
-    # ensure all values are JSON serializable
     cleaned = json.loads(json.dumps(result, default=str))
     return jsonify(cleaned)
 
@@ -234,6 +288,20 @@ def api_position_weights(position):
             continue
     return jsonify({"position": position, "total_weight": total})
 
+
+@app.route('/api/scoring_config/<position>', methods=['GET'])
+def api_scoring_config(position):
+    """Return scoring configuration for a position."""
+    config = load_scoring_config()
+    return jsonify(config.get(position, {}))
+
+
+@app.route('/api/positions', methods=['GET'])
+def api_positions():
+    """Return list of available positions."""
+    config = load_scoring_config()
+    return jsonify(list(config.keys()))
+
 @app.route('/add', methods=['POST'])
 def add_candidate():
     data = request.form
@@ -246,6 +314,7 @@ def add_candidate():
         'name': data.get('name', ''),
         'mobile': data.get('mobile', ''),
         'gender': data.get('gender', ''),
+        'position_type': data.get('position_type', ''),
         'source_of_news': 'Jobinja',
         'year_of_birth': '1370',
         # the rest remain blank until edit
@@ -256,6 +325,8 @@ def add_candidate():
         'exp_dashboard_b2b':'', 'exp_dynamic_reports':'', 'exp_role_based_access':'',
         'exp_pos_mobile':'', 'exp_data_sync':'', 'exp_multistep_forms':'',
         'exp_low_digital_users':'', 'exp_multilingual':'', 'exp_portfolio_relevant':'',
+        'exp_grpc':'', 'exp_microservices':'', 'exp_unit_testing':'',
+        'exp_figma':'', 'exp_user_research':'', 'exp_prototyping':'',
         'interviewer_score':'0', 'design_score':'0', 'look_score':'0',
         'portfolio_score':'0', 'previous_work_score':'0',
         'resume_file': stored_resume, 'total_score':'',
