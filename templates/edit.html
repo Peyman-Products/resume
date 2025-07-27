@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Edit Candidate</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="p-4">
 <div class="container">
@@ -26,141 +27,143 @@
 
     <div class="tab-content">
       <div class="tab-pane fade show active" id="tabGeneral">
-        <div class="row g-3">
-          <div class="col-12">
-            <h5 class="fw-bold text-primary"><em>Personal Info</em></h5>
-            <hr>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Full Name</label>
-            <input name="name" value="{{ candidate.name }}" type="text" class="form-control" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Mobile Number</label>
-            <input name="mobile" value="{{ candidate.mobile }}" type="text" class="form-control" required>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Gender</label>
-            <select name="gender" class="form-select" required>
-              <option value="">Select</option>
-              <option {% if candidate.gender=='Male' %}selected{% endif %}>Male</option>
-              <option {% if candidate.gender=='Female' %}selected{% endif %}>Female</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Year of Birth</label>
-            <input name="year_of_birth" value="{{ candidate.year_of_birth or 1370 }}" type="number" class="form-control">
-          </div>
-          <div class="col-12 mt-3">
-            <h5 class="fw-bold text-success"><em>Background</em></h5>
-            <hr>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Marital Status</label>
-            <select name="marital_status" class="form-select">
-              <option value="">Select</option>
-              <option {% if candidate.marital_status=='Single' %}selected{% endif %}>Single</option>
-              <option {% if candidate.marital_status=='Married' %}selected{% endif %}>Married</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Education Level</label>
-            <select name="education" class="form-select">
-              <option value="">Select</option>
-              <option {% if candidate.education=='Diploma' %}selected{% endif %}>Diploma</option>
-              <option {% if candidate.education=='Bachelor' %}selected{% endif %}>Bachelor</option>
-              <option {% if candidate.education=='Master' %}selected{% endif %}>Master</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Major / Field</label>
-            <input name="major" value="{{ candidate.major }}" type="text" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Years of Experience</label>
-            <input name="years_of_experience" value="{{ candidate.years_of_experience or 0 }}" type="number" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Military Status</label>
-            <select name="military_status" class="form-select">
-              <option value="">Select</option>
-              <option {% if candidate.military_status=='Completed' %}selected{% endif %}>Completed</option>
-              <option {% if candidate.military_status=='Exempt' %}selected{% endif %}>Exempt</option>
-              <option {% if candidate.military_status=='In Progress' %}selected{% endif %}>In Progress</option>
-              <option {% if candidate.military_status=='N/A' %}selected{% endif %}>N/A</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Current Job Status</label>
-            <select name="job_status" class="form-select">
-              <option value="">Select</option>
-              <option {% if candidate.job_status=='Employed' %}selected{% endif %}>Employed</option>
-              <option {% if candidate.job_status=='Freelancer' %}selected{% endif %}>Freelancer</option>
-              <option {% if candidate.job_status=='Unemployed' %}selected{% endif %}>Unemployed</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-select">
-              <option value="pending" {% if candidate.status=='pending' or candidate.status=='' %}selected{% endif %}>pending</option>
-              <option value="called" {% if candidate.status=='called' %}selected{% endif %}>called</option>
-              <option value="Online meeting" {% if candidate.status=='Online meeting' %}selected{% endif %}>Online meeting</option>
-              <option value="offline meeting" {% if candidate.status=='offline meeting' %}selected{% endif %}>offline meeting</option>
-              <option value="rejected" {% if candidate.status=='rejected' %}selected{% endif %}>rejected</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Can Start From</label>
-            <select name="can_start_from" class="form-select">
-              <option value="">Select</option>
-              <option {% if candidate.can_start_from=='1 Week' %}selected{% endif %}>1 Week</option>
-              <option {% if candidate.can_start_from=='Less than a month' %}selected{% endif %}>Less than a month</option>
-              <option {% if candidate.can_start_from=='More than a month' %}selected{% endif %}>More than a month</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <div class="form-check mt-4">
-              <input name="available_9_to_6" class="form-check-input" type="checkbox" value="Yes" {% if candidate.available_9_to_6=='Yes' %}checked{% endif %}>
-              <label class="form-check-label">Okay with 9-6 Work?</label>
+        <div class="form-section">
+          <h5 class="fw-bold text-primary"><em>Personal Info</em></h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input name="name" value="{{ candidate.name }}" type="text" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Mobile Number</label>
+              <input name="mobile" value="{{ candidate.mobile }}" type="text" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Gender</label>
+              <select name="gender" class="form-select" required>
+                <option value="">Select</option>
+                <option {% if candidate.gender=='Male' %}selected{% endif %}>Male</option>
+                <option {% if candidate.gender=='Female' %}selected{% endif %}>Female</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Year of Birth</label>
+              <input name="year_of_birth" value="{{ candidate.year_of_birth or 1370 }}" type="number" class="form-control">
             </div>
           </div>
-          <div class="col-md-3">
-            <label class="form-label">Telegram ID</label>
-            <input name="telegram_id" value="{{ candidate.telegram_id }}" type="text" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Source of News</label>
-            <select name="source_of_news" class="form-select">
-              <option value="Linkedin" {% if candidate.source_of_news=='Linkedin' %}selected{% endif %}>Linkedin</option>
-              <option value="Connections" {% if candidate.source_of_news=='Connections' %}selected{% endif %}>Connections</option>
-              <option value="Jobinja" {% if candidate.source_of_news=='Jobinja' or candidate.source_of_news=='' %}selected{% endif %}>Jobinja</option>
-              <option value="Jobvision" {% if candidate.source_of_news=='Jobvision' %}selected{% endif %}>Jobvision</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <div class="form-check mt-4">
-              <input name="has_portfolio" class="form-check-input" type="checkbox" value="Yes" {% if candidate.has_portfolio=='Yes' %}checked{% endif %}>
-              <label class="form-check-label">Has Portfolio?</label>
+        </div>
+
+        <div class="form-section">
+          <h5 class="fw-bold text-success"><em>Background</em></h5>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Marital Status</label>
+              <select name="marital_status" class="form-select">
+                <option value="">Select</option>
+                <option {% if candidate.marital_status=='Single' %}selected{% endif %}>Single</option>
+                <option {% if candidate.marital_status=='Married' %}selected{% endif %}>Married</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Education Level</label>
+              <select name="education" class="form-select">
+                <option value="">Select</option>
+                <option {% if candidate.education=='Diploma' %}selected{% endif %}>Diploma</option>
+                <option {% if candidate.education=='Bachelor' %}selected{% endif %}>Bachelor</option>
+                <option {% if candidate.education=='Master' %}selected{% endif %}>Master</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Major / Field</label>
+              <input name="major" value="{{ candidate.major }}" type="text" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Years of Experience</label>
+              <input name="years_of_experience" value="{{ candidate.years_of_experience or 0 }}" type="number" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Military Status</label>
+              <select name="military_status" class="form-select">
+                <option value="">Select</option>
+                <option {% if candidate.military_status=='Completed' %}selected{% endif %}>Completed</option>
+                <option {% if candidate.military_status=='Exempt' %}selected{% endif %}>Exempt</option>
+                <option {% if candidate.military_status=='In Progress' %}selected{% endif %}>In Progress</option>
+                <option {% if candidate.military_status=='N/A' %}selected{% endif %}>N/A</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Current Job Status</label>
+              <select name="job_status" class="form-select">
+                <option value="">Select</option>
+                <option {% if candidate.job_status=='Employed' %}selected{% endif %}>Employed</option>
+                <option {% if candidate.job_status=='Freelancer' %}selected{% endif %}>Freelancer</option>
+                <option {% if candidate.job_status=='Unemployed' %}selected{% endif %}>Unemployed</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Status</label>
+              <select name="status" class="form-select">
+                <option value="pending" {% if candidate.status=='pending' or candidate.status=='' %}selected{% endif %}>pending</option>
+                <option value="called" {% if candidate.status=='called' %}selected{% endif %}>called</option>
+                <option value="Online meeting" {% if candidate.status=='Online meeting' %}selected{% endif %}>Online meeting</option>
+                <option value="offline meeting" {% if candidate.status=='offline meeting' %}selected{% endif %}>offline meeting</option>
+                <option value="rejected" {% if candidate.status=='rejected' %}selected{% endif %}>rejected</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Can Start From</label>
+              <select name="can_start_from" class="form-select">
+                <option value="">Select</option>
+                <option {% if candidate.can_start_from=='1 Week' %}selected{% endif %}>1 Week</option>
+                <option {% if candidate.can_start_from=='Less than a month' %}selected{% endif %}>Less than a month</option>
+                <option {% if candidate.can_start_from=='More than a month' %}selected{% endif %}>More than a month</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <div class="form-check mt-4">
+                <input name="available_9_to_6" class="form-check-input" type="checkbox" value="Yes" {% if candidate.available_9_to_6=='Yes' %}checked{% endif %}>
+                <label class="form-check-label">Okay with 9-6 Work?</label>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Telegram ID</label>
+              <input name="telegram_id" value="{{ candidate.telegram_id }}" type="text" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Source of News</label>
+              <select name="source_of_news" class="form-select">
+                <option value="Linkedin" {% if candidate.source_of_news=='Linkedin' %}selected{% endif %}>Linkedin</option>
+                <option value="Connections" {% if candidate.source_of_news=='Connections' %}selected{% endif %}>Connections</option>
+                <option value="Jobinja" {% if candidate.source_of_news=='Jobinja' or candidate.source_of_news=='' %}selected{% endif %}>Jobinja</option>
+                <option value="Jobvision" {% if candidate.source_of_news=='Jobvision' %}selected{% endif %}>Jobvision</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <div class="form-check mt-4">
+                <input name="has_portfolio" class="form-check-input" type="checkbox" value="Yes" {% if candidate.has_portfolio=='Yes' %}checked{% endif %}>
+                <label class="form-check-label">Has Portfolio?</label>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Portfolio Score</label>
+              <input name="portfolio_score" value="{{ candidate.portfolio_score or 0 }}" type="number" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Previous Work Score</label>
+              <input name="previous_work_score" value="{{ candidate.previous_work_score or 0 }}" type="number" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <div class="form-check mt-4">
+                <input name="ok_with_task" class="form-check-input" type="checkbox" value="Yes" {% if candidate.ok_with_task=='Yes' %}checked{% endif %}>
+                <label class="form-check-label">Okay with Design Task?</label>
+              </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <label class="form-label">Portfolio Score</label>
-            <input name="portfolio_score" value="{{ candidate.portfolio_score or 0 }}" type="number" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Previous Work Score</label>
-            <input name="previous_work_score" value="{{ candidate.previous_work_score or 0 }}" type="number" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <div class="form-check mt-4">
-              <input name="ok_with_task" class="form-check-input" type="checkbox" value="Yes" {% if candidate.ok_with_task=='Yes' %}checked{% endif %}>
-              <label class="form-check-label">Okay with Design Task?</label>
-            </div>
-          </div>
-          <div class="col-12 mt-3">
-            <h5 class="fw-bold text-primary"><em>Scores</em></h5>
-            <hr>
-          </div>
+        </div>
+
+        <div class="form-section">
+          <h5 class="fw-bold text-primary"><em>Scores</em></h5>
+          <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label">City / Area in Tehran</label>
             <input name="location" value="{{ candidate.location }}" type="text" class="form-control">
