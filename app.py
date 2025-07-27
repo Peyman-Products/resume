@@ -205,6 +205,28 @@ def index():
     df['id'] = df['id'].astype(int)
     return render_template('index.html', candidates=df.to_dict(orient='records'))
 
+
+@app.route('/admin')
+def admin_page():
+    """Render admin settings page with current scoring config."""
+    config = load_scoring_config()
+    return render_template('admin.html', config=config)
+
+
+@app.route('/save_position', methods=['POST'])
+def save_position():
+    """Create or update a position and its score fields."""
+    data = request.get_json(force=True)
+    position = data.get('position')
+    scores = data.get('scores', {})
+    if not position or not isinstance(scores, dict):
+        return jsonify({'error': 'invalid data'}), 400
+    config = load_scoring_config()
+    config[position] = scores
+    with open(SCORING_CONFIG_FILE, 'w') as f:
+        json.dump(config, f, indent=2)
+    return jsonify({'status': 'ok'})
+
 # API endpoint for frontend
 @app.route('/api/candidates', methods=['GET'])
 def api_candidates():
