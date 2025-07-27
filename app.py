@@ -91,16 +91,22 @@ def read_data():
     for col in COLUMNS:
         if col not in df.columns:
             df[col] = ''
+
+    # convert any missing values to empty strings
+    df = df.fillna('')
+
     if 'years_of_experience' in df.columns:
-        df['years_of_experience'] = df['years_of_experience'].fillna(0)
+        df['years_of_experience'] = (
+            pd.to_numeric(df['years_of_experience'], errors='coerce').fillna(0)
+        )
     if 'meetings' in df.columns:
-        df['meetings'] = df['meetings'].fillna('[]')
+        df['meetings'] = df['meetings'].replace('', '[]')
     if 'id' in df.columns:
-        df['id'] = df['id'].fillna(0).astype(int)
+        df['id'] = pd.to_numeric(df['id'], errors='coerce').fillna(0).astype(int)
     if 'year_of_birth' in df.columns:
-        df['year_of_birth'] = df['year_of_birth'].fillna(1370)
+        df['year_of_birth'] = df['year_of_birth'].replace('', 1370)
     if 'source_of_news' in df.columns:
-        df['source_of_news'] = df['source_of_news'].fillna('Jobinja')
+        df['source_of_news'] = df['source_of_news'].replace('', 'Jobinja')
     return df
 
 def write_data(df):
@@ -198,7 +204,9 @@ def api_candidates():
     # Replace NaN values with None so the JSON is valid
     df = df.where(pd.notnull(df), None)
     result = df.to_dict(orient='records')
-    return jsonify(result)
+    # ensure all values are JSON serializable
+    cleaned = json.loads(json.dumps(result, default=str))
+    return jsonify(cleaned)
 
 @app.route('/add', methods=['POST'])
 def add_candidate():
