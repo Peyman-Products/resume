@@ -9,37 +9,56 @@
 <body class="p-4">
 <div class="container">
   <h3 class="mb-3">Admin Settings</h3>
-  <h5>Existing Positions</h5>
-  <ul>
-    {% for pid, info in config.items() %}
-    <li><strong>{{ info.name }}</strong> ({{ pid }})</li>
-    {% endfor %}
+
+  <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="positions-tab" data-bs-toggle="tab" data-bs-target="#positions" type="button" role="tab">Positions</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="global-tab" data-bs-toggle="tab" data-bs-target="#global" type="button" role="tab">Global Settings</button>
+    </li>
   </ul>
+  <div class="tab-content mt-3">
+    <div class="tab-pane fade show active" id="positions" role="tabpanel">
+      <h5>Existing Positions</h5>
+      <ul>
+        {% for pid, info in positions.items() %}
+        <li><strong>{{ info.name }}</strong> ({{ pid }})</li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <h5>Add / Update Position</h5>
+      <div class="mb-3">
+        <label class="form-label">Position ID</label>
+        <input type="text" id="positionId" class="form-control" placeholder="golang">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Position Name</label>
+        <input type="text" id="positionName" class="form-control" placeholder="Golang Developer">
+      </div>
+      <div id="scoresContainer"></div>
+      <button class="btn btn-secondary mb-3" id="addScoreBtn">Add Score Field</button>
+      <div>
+        <button class="btn btn-primary" id="saveBtn">Save Position</button>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="global" role="tabpanel">
+      <h5>Global Scoring Configuration</h5>
+      <textarea id="globalConfig" class="form-control" rows="12">{{ global_config | tojson(indent=2) }}</textarea>
+      <button class="btn btn-primary mt-2" id="saveGlobalBtn">Save Global</button>
+    </div>
+  </div>
   <hr>
-  <h5>Add / Update Position</h5>
-  <div class="mb-3">
-    <label class="form-label">Position ID</label>
-    <input type="text" id="positionId" class="form-control" placeholder="golang">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Position Name</label>
-    <input type="text" id="positionName" class="form-control" placeholder="Golang Developer">
-  </div>
-  <div id="scoresContainer"></div>
-  <button class="btn btn-secondary mb-3" id="addScoreBtn">Add Score Field</button>
-  <div>
-    <button class="btn btn-primary" id="saveBtn">Save Position</button>
-    <a href="/" class="btn btn-secondary">Back</a>
-  </div>
+  <a href="/" class="btn btn-secondary">Back</a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  // Position handling
   const container = document.getElementById('scoresContainer');
   function addRow(key='', label='', pts='') {
     const row = document.createElement('div');
     row.className = 'row g-2 mb-2';
-    row.innerHTML = `
-      <div class="col"><input type="text" class="form-control" placeholder="Key" value="${key}"></div>
+    row.innerHTML = `<div class="col"><input type="text" class="form-control" placeholder="Key" value="${key}"></div>
       <div class="col"><input type="text" class="form-control" placeholder="Label" value="${label}"></div>
       <div class="col"><input type="number" class="form-control" placeholder="Points" value="${pts}"></div>
       <div class="col-auto"><button class="btn btn-danger btn-sm remove">X</button></div>`;
@@ -63,6 +82,21 @@
       body: JSON.stringify({id, name, experience})
     }).then(res => {
       if (res.ok) location.reload();
+      else res.text().then(t => alert(t));
+    });
+  };
+
+  // Global config handling
+  document.getElementById('saveGlobalBtn').onclick = () => {
+    let cfg;
+    try { cfg = JSON.parse(document.getElementById('globalConfig').value); }
+    catch (e) { return alert('Invalid JSON'); }
+    fetch('/save_global', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(cfg)
+    }).then(res => {
+      if (res.ok) alert('Saved');
       else res.text().then(t => alert(t));
     });
   };
