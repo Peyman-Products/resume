@@ -14,9 +14,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onAdded: () => void;
+  position: string;
 }
 
-export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
+export default function AddCandidateDialog({ open, onClose, onAdded, position }: Props) {
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [gender, setGender] = useState('Male');
@@ -33,10 +34,11 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
     form.append('name', name || '');
     form.append('mobile', mobile || '');
     form.append('gender', gender || '');
+    form.append('position_type', position);
     if (resume) {
       form.append('resume', resume);
     }
-    await fetch('http://localhost:5000/add', {
+    await fetch('http://localhost:5000/api/candidates', {
       method: 'POST',
       body: form,
     });
