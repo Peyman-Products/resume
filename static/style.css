@@ -1,0 +1,16 @@
+.form-section {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+.form-section h5 {
+  margin-bottom: 1rem;
+}
+form .form-control,
+form .form-select {
+  min-width: 220px;
+}
+form label.form-label {
+  font-weight: 500;
+}
