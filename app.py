@@ -305,12 +305,27 @@ def edit_candidate(candidate_id):
     for key, value in request.form.items():
         if key.endswith('[]'):
             continue
+        if key == 'id':
+            # never overwrite the ID
+            continue
         if key in df.columns:
             df.loc[df['id'] == candidate_id, key] = value
     if resume_file and resume_file.filename:
         stored = save_resume_file(resume_file, request.form.get('name', ''))
         df.loc[df['id'] == candidate_id, 'resume_file'] = stored
-    row = df[df['id'] == candidate_id].iloc[0].to_dict()
+
+    numeric_cols = [
+        'years_of_experience', 'interviewer_score', 'design_score', 'look_score',
+        'portfolio_score', 'previous_work_score'
+    ]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+    record = df[df['id'] == candidate_id]
+    if record.empty:
+        write_data(df)
+        return redirect(url_for('index'))
+    row = record.iloc[0].to_dict()
     df.loc[df['id'] == candidate_id, 'total_score'] = compute_total_score(row)
     write_data(df)
     return redirect(url_for('index'))

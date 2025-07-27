@@ -75,6 +75,7 @@ export default function EditPage() {
     if (!candidate) return;
     const form = new FormData();
     Object.keys(candidate).forEach((key) => {
+      if (key === 'id' || key === 'meetings_list') return;
       const val = candidate[key];
       if (val !== undefined && val !== null) {
         form.append(key, String(val));

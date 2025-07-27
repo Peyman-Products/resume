@@ -51,7 +51,7 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>New Candidate</DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1, minWidth: 300 }}>
         <TextField
           label="Name"
           value={name}
