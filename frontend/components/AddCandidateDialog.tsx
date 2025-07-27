@@ -7,6 +7,7 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  FormHelperText,
 } from '@mui/material';
 
 interface Props {
@@ -19,12 +20,22 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [gender, setGender] = useState('Male');
+  const [resume, setResume] = useState<File | null>(null);
+  const [mobileError, setMobileError] = useState('');
 
   const handleSubmit = async () => {
+    if (!/^0\d{10}$/.test(mobile)) {
+      setMobileError('Mobile must start with 0 and be 11 digits');
+      return;
+    }
+    setMobileError('');
     const form = new FormData();
     form.append('name', name || '');
     form.append('mobile', mobile || '');
     form.append('gender', gender || '');
+    if (resume) {
+      form.append('resume', resume);
+    }
     await fetch('http://localhost:5000/add', {
       method: 'POST',
       body: form,
@@ -32,6 +43,7 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
     setName('');
     setMobile('');
     setGender('Male');
+    setResume(null);
     onAdded();
     onClose();
   };
@@ -51,6 +63,8 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
           value={mobile}
           onChange={(e) => setMobile(e.target.value)}
           fullWidth
+          error={!!mobileError}
+          helperText={mobileError}
         />
         <TextField
           select
@@ -62,6 +76,15 @@ export default function AddCandidateDialog({ open, onClose, onAdded }: Props) {
           <MenuItem value="Male">Male</MenuItem>
           <MenuItem value="Female">Female</MenuItem>
         </TextField>
+        <Button variant="outlined" component="label">
+          Upload Resume
+          <input
+            type="file"
+            hidden
+            onChange={(e) => setResume(e.target.files ? e.target.files[0] : null)}
+          />
+        </Button>
+        {resume && <FormHelperText>{resume.name}</FormHelperText>}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

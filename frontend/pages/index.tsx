@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import AddCandidateDialog from '../components/AddCandidateDialog';
+import ViewDrawer from '../components/ViewDrawer';
 
 interface Candidate {
   id: number;
@@ -25,6 +26,8 @@ export default function Home() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selected, setSelected] = useState<Candidate | null>(null);
 
   const fetchData = () => {
     setLoading(true);
@@ -34,6 +37,20 @@ export default function Home() {
         setCandidates(data);
         setLoading(false);
       });
+  };
+
+  const openDrawer = async (id: number) => {
+    const res = await fetch(`http://localhost:5000/get/${id}`);
+    const data = await res.json();
+    if (data.meetings) {
+      try {
+        data.meetings_list = JSON.parse(data.meetings);
+      } catch {
+        data.meetings_list = [];
+      }
+    }
+    setSelected(data);
+    setDrawerOpen(true);
   };
 
   useEffect(() => {
@@ -57,6 +74,15 @@ export default function Home() {
         ),
     },
     { field: 'status', headerName: 'Status', flex: 1 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: (params) => (
+        <Button size="small" onClick={() => openDrawer(params.row.id)}>
+          View
+        </Button>
+      ),
+    },
   ];
 
   const filtered = candidates.filter((c) =>
@@ -103,6 +129,14 @@ export default function Home() {
         </div>
       )}
       <AddCandidateDialog open={open} onClose={() => setOpen(false)} onAdded={fetchData} />
+      <ViewDrawer
+        open={drawerOpen}
+        onClose={() => {
+          setDrawerOpen(false);
+          setSelected(null);
+        }}
+        candidate={selected}
+      />
     </Container>
   );
 }
