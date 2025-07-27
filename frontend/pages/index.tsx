@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
   Container,
@@ -6,7 +7,10 @@ import {
   CircularProgress,
   Button,
   TextField,
+  IconButton,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import AddCandidateDialog from '../components/AddCandidateDialog';
 import ViewDrawer from '../components/ViewDrawer';
@@ -22,6 +26,7 @@ interface Candidate {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [open, setOpen] = useState(false);
@@ -78,9 +83,22 @@ export default function Home() {
       field: 'actions',
       headerName: 'Actions',
       renderCell: (params) => (
-        <Button size="small" onClick={() => openDrawer(params.row.id)}>
-          View
-        </Button>
+        <>
+          <IconButton
+            size="small"
+            onClick={() => openDrawer(params.row.id)}
+            aria-label="view"
+          >
+            <VisibilityIcon fontSize="inherit" />
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={() => router.push(`/edit/${params.row.id}`)}
+            aria-label="edit"
+          >
+            <EditIcon fontSize="inherit" />
+          </IconButton>
+        </>
       ),
     },
   ];
