@@ -33,9 +33,19 @@ This repository contains a Flask backend for managing candidate resumes and a Ne
    ```
 3. Start the Next.js development server:
    ```bash
-   npm run dev
-   ```
+npm run dev
+```
    This will start the app on `http://localhost:3000`.
+
+If you encounter an error about global CSS when using MUI's `DataGrid` with the
+latest Next.js versions, ensure the package is transpiled. The included
+`next.config.js` sets:
+
+```javascript
+  transpilePackages: ['@mui/x-data-grid']
+```
+
+This allows the DataGrid styles to be processed correctly.
 
 The frontend fetches candidate data from the Flask backend using the `/api/candidates` endpoint.
 
