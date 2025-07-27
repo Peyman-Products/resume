@@ -62,3 +62,33 @@ npm start
 - Access `http://localhost:3000` to view the candidate list rendered using Material UI components.
 - Use the backend endpoints defined in `app.py` to add, edit or delete candidates.
 
+## Candidate Types and Admin Area
+
+The application distinguishes between multiple candidate positions. Two example
+roles are provided out of the box:
+
+- **Go Developer**
+- **Product Designer**
+
+When a candidate is created you choose which position they are applying for. All
+positions share the same general information fields as well as the "test task"
+score and meeting history.
+
+### Technical Experience by Position
+
+Each position has its own set of technical experience questions. The default
+scoring for these questions lives in the backend (see `TECH_SCORES` in
+`app.py`). An admin interface allows these questions and their score values to
+be modified per position. This interface can also be used to adjust the scores
+for the general categories such as education or availability.
+
+### Typical User Flow
+
+1. Visit the home page.
+2. Choose the position (Go Developer or Product Designer).
+3. The candidate list for that position is displayed.
+4. For each row you can **view**, **edit** or **delete** the candidate. The
+   delete action appears as a trash bin icon.
+5. Use the **Add** button to register a new candidate in the selected list.
+
+
