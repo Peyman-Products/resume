@@ -4,56 +4,7 @@ import pandas as pd
 import os
 import json
 
-# scoring maps
-TECH_SCORES = {
-    'exp_dashboard_b2b': 4,
-    'exp_dynamic_reports': 6,
-    'exp_role_based_access': 3,
-    'exp_pos_mobile': 6,
-    'exp_data_sync': 3,
-    'exp_multistep_forms': 4,
-    'exp_low_digital_users': 5,
-    'exp_multilingual': 2,
-    'exp_portfolio_relevant': 2,
-    'exp_grpc': 5,
-    'exp_microservices': 6,
-    'exp_unit_testing': 4,
-    'exp_figma': 5,
-    'exp_user_research': 6,
-    'exp_prototyping': 4,
-}
-
-GENERAL_SCORES = {
-    'gender': {
-        'Male': -3,
-        'Female': 1,
-    },
-    'marital_status': {
-        'Single': 1,
-        'Married': 0,
-    },
-    'education': {
-        'Diploma': 0,
-        'Bachelor': 1,
-        'Master': 2,
-    },
-    'military_status': {
-        'Completed': 2,
-        'Exempt': 1,
-        'In Progress': -4,
-        'N/A': 0,
-    },
-    'job_status': {
-        'Employed': -1,
-        'Freelancer': 0,
-        'Unemployed': 1,
-    },
-    'can_start_from': {
-        '1 Week': 5,
-        'Less than a month': 2,
-        'More than a month': -5,
-    },
-}
+# scoring configuration and candidate data
 
 COLUMNS = [
     'id', 'name', 'mobile', 'gender', 'position_type', 'source_of_news', 'year_of_birth',
@@ -151,57 +102,66 @@ def save_resume_file(file, full_name):
     return filename
 
 def compute_total_score(row):
-    score = 0
-    # technical experience
-    for field, pts in TECH_SCORES.items():
-        if str(row.get(field, '')).strip() == 'Yes':
-            score += pts
-
-    # position specific experience
+    """Compute a candidate's total score based on the scoring config."""
     config = load_scoring_config()
-    role = str(row.get('position_type', '')).lower()
-    role_cfg = config.get(role, {})
-    for field, pts in role_cfg.items():
-        if str(row.get(field, '')).strip() == 'Yes':
-            score += pts
+    positions = config.get("positions", {})
+    global_cfg = config.get("global", {})
 
-    # general items
-    for field, mapping in GENERAL_SCORES.items():
-        val = str(row.get(field, '')).strip()
-        score += mapping.get(val, 0)
+    score = 0
 
-    # additional boolean fields
-    if str(row.get('available_9_to_6', '')) == 'Yes':
+    # position specific experience items
+    role = str(row.get("position_type", "")).lower()
+    role_cfg = positions.get(role, {})
+    experience_cfg = role_cfg.get("experience", {})
+    for field, item in experience_cfg.items():
+        if str(row.get(field, "")).strip() == "Yes":
+            score += float(item.get("points", 0))
+
+    # general mappings such as gender, education etc.
+    def map_score(field_name, value):
+        mapping = global_cfg.get(field_name, {})
+        return mapping.get(str(value).lower().replace(" ", "_"), 0)
+
+    for general_field in [
+        "gender",
+        "education",
+        "military_status",
+        "job_status",
+    ]:
+        score += map_score(general_field, row.get(general_field, ""))
+
+    # start availability
+    score += map_score("availability", row.get("can_start_from", ""))
+
+    # additional boolean fields (fixed weights)
+    if str(row.get("available_9_to_6", "")).lower() == "yes":
         score += 5
-    if str(row.get('has_portfolio', '')) == 'Yes':
+    if str(row.get("has_portfolio", "")).lower() == "yes":
         score += 5
-    if str(row.get('ok_with_task', '')) == 'Yes':
+    if str(row.get("ok_with_task", "")).lower() == "yes":
         score += 2
 
-    # interviewer, design, look, portfolio and previous work scores
-    try:
-        score += float(row.get('interviewer_score', 0))
-    except ValueError:
-        pass
-    try:
-        score += float(row.get('design_score', 0))
-    except ValueError:
-        pass
-    try:
-        score += float(row.get('look_score', 0))
-    except ValueError:
-        pass
-    try:
-        score += float(row.get('portfolio_score', 0))
-    except ValueError:
-        pass
-    try:
-        score += float(row.get('previous_work_score', 0))
-    except ValueError:
-        pass
+    # reviewer scores
+    weights = global_cfg.get(
+        "reviewer_weights",
+        {
+            "interview_score": 1,
+            "design_score": 1,
+            "look_score": 1,
+            "portfolio_score": 1,
+            "previous_work_score": 1,
+        },
+    )
+    for field, w in weights.items():
+        try:
+            score += float(row.get(field, 0)) * float(w)
+        except ValueError:
+            continue
 
+    # years of experience
     try:
-        score += float(row.get('years_of_experience', 0)) * 5
+        yrs = float(row.get("years_of_experience", 0))
+        score += yrs * float(global_cfg.get("exp_per_year", 5))
     except ValueError:
         pass
 
@@ -226,19 +186,25 @@ def index():
 def admin_page():
     """Render admin settings page with current scoring config."""
     config = load_scoring_config()
-    return render_template('admin.html', config=config)
+    return render_template('admin.html', config=config.get('positions', {}))
 
 
 @app.route('/save_position', methods=['POST'])
 def save_position():
     """Create or update a position and its score fields."""
     data = request.get_json(force=True)
-    position = data.get('position')
-    scores = data.get('scores', {})
-    if not position or not isinstance(scores, dict):
+    pos_id = data.get('id')
+    name = data.get('name')
+    experience = data.get('experience', {})
+    if not pos_id or not name or not isinstance(experience, dict):
         return jsonify({'error': 'invalid data'}), 400
     config = load_scoring_config()
-    config[position] = scores
+    if 'positions' not in config:
+        config['positions'] = {}
+    config['positions'][pos_id] = {
+        'name': name,
+        'experience': experience,
+    }
     with open(SCORING_CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
     return jsonify({'status': 'ok'})
@@ -311,18 +277,29 @@ def api_position_weights(position):
     return jsonify({"position": position, "total_weight": total})
 
 
-@app.route('/api/scoring_config/<position>', methods=['GET'])
-def api_scoring_config(position):
+@app.route('/api/scoring/<position>', methods=['GET'])
+def api_scoring(position):
     """Return scoring configuration for a position."""
     config = load_scoring_config()
-    return jsonify(config.get(position, {}))
+    pos = config.get("positions", {}).get(position, {})
+    return jsonify(pos)
+
+@app.route('/api/scoring/global', methods=['GET'])
+def api_scoring_global():
+    """Return global scoring configuration."""
+    config = load_scoring_config()
+    return jsonify(config.get("global", {}))
 
 
 @app.route('/api/positions', methods=['GET'])
 def api_positions():
-    """Return list of available positions."""
+    """Return list of available positions with id and name."""
     config = load_scoring_config()
-    return jsonify(list(config.keys()))
+    positions = config.get("positions", {})
+    result = []
+    for pid, pdata in positions.items():
+        result.append({"id": pid, "name": pdata.get("name", pid)})
+    return jsonify(result)
 
 @app.route('/add', methods=['POST'])
 def add_candidate():
