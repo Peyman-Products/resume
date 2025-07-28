@@ -30,9 +30,10 @@ export default function AdminPage() {
       <Head>
         <title>Admin</title>
       </Head>
-      <Typography variant="h4" gutterBottom>
-        Positions
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4">Positions</Typography>
+        <Button variant="outlined" onClick={() => router.push('/')}>Back</Button>
+      </Box>
       <Button
         variant="contained"
         onClick={() => router.push('/admin/position/new')}
