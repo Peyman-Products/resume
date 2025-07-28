@@ -51,6 +51,18 @@ export default function PositionForm() {
   });
   const [tab, setTab] = useState(0);
 
+  const sections: Array<[
+    keyof Omit<GlobalForm, 'exp_per_year'>,
+    string
+  ]> = [
+    ['gender', 'Gender'],
+    ['education', 'Education'],
+    ['military_status', 'Military Status'],
+    ['job_status', 'Job Status'],
+    ['availability', 'Availability'],
+    ['reviewer_weights', 'Reviewer Weights'],
+  ];
+
   useEffect(() => {
     if (!id) return;
     if (id !== 'new') {
@@ -184,16 +196,7 @@ export default function PositionForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {(
-            [
-              ['gender', 'Gender'],
-              ['education', 'Education'],
-              ['military_status', 'Military Status'],
-              ['job_status', 'Job Status'],
-              ['availability', 'Availability'],
-              ['reviewer_weights', 'Reviewer Weights'],
-            ] as [keyof Omit<GlobalForm, 'exp_per_year'>, string][]
-          ).map(([section, title]) => (
+          {sections.map(([section, title]) => (
             <Box key={section}>
               <Typography variant="subtitle1" gutterBottom>
                 {title}
