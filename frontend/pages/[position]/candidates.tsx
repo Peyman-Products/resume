@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import AddCandidateDialog from '../../components/AddCandidateDialog';
 import ViewDrawer from '../../components/ViewDrawer';
@@ -35,6 +36,12 @@ export default function CandidateList() {
   const [search, setSearch] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
+
+  const deleteCandidate = async (id: number) => {
+    if (!confirm('Delete this candidate?')) return;
+    await fetch(`http://localhost:5000/delete/${id}`, { method: 'POST' });
+    fetchData();
+  };
 
   const fetchData = () => {
     if (!position) return;
@@ -100,6 +107,13 @@ export default function CandidateList() {
             aria-label="edit"
           >
             <EditIcon fontSize="inherit" />
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={() => deleteCandidate(params.row.id)}
+            aria-label="delete"
+          >
+            <DeleteIcon fontSize="inherit" />
           </IconButton>
         </>
       ),
