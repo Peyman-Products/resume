@@ -19,13 +19,36 @@ interface ExpRow {
   points: string;
 }
 
+interface MapRow {
+  key: string;
+  points: string;
+}
+
+interface GlobalForm {
+  gender: MapRow[];
+  education: MapRow[];
+  military_status: MapRow[];
+  job_status: MapRow[];
+  availability: MapRow[];
+  reviewer_weights: MapRow[];
+  exp_per_year: string;
+}
+
 export default function PositionForm() {
   const router = useRouter();
   const { id } = router.query;
   const [positionId, setPositionId] = useState('');
   const [name, setName] = useState('');
   const [rows, setRows] = useState<ExpRow[]>([]);
-  const [globalText, setGlobalText] = useState('');
+  const [globalForm, setGlobalForm] = useState<GlobalForm>({
+    gender: [{ key: '', points: '' }],
+    education: [{ key: '', points: '' }],
+    military_status: [{ key: '', points: '' }],
+    job_status: [{ key: '', points: '' }],
+    availability: [{ key: '', points: '' }],
+    reviewer_weights: [{ key: '', points: '' }],
+    exp_per_year: '',
+  });
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
@@ -52,7 +75,25 @@ export default function PositionForm() {
     }
     fetch('http://localhost:5000/api/scoring/global')
       .then((res) => res.json())
-      .then((data) => setGlobalText(JSON.stringify(data, null, 2)));
+      .then((data) => {
+        const toRows = (obj: any): MapRow[] => {
+          if (!obj) return [{ key: '', points: '' }];
+          const entries = Object.entries(obj).map(([k, v]) => ({
+            key: String(k),
+            points: String(v as any),
+          }));
+          return entries.length ? entries : [{ key: '', points: '' }];
+        };
+        setGlobalForm({
+          gender: toRows(data.gender),
+          education: toRows(data.education),
+          military_status: toRows(data.military_status),
+          job_status: toRows(data.job_status),
+          availability: toRows(data.availability),
+          reviewer_weights: toRows(data.reviewer_weights),
+          exp_per_year: String(data.exp_per_year ?? ''),
+        });
+      });
   }, [id]);
 
   const updateRow = (idx: number, field: keyof ExpRow, value: string) => {
@@ -88,13 +129,23 @@ export default function PositionForm() {
   };
 
   const handleSaveGlobal = async () => {
-    let cfg: any;
-    try {
-      cfg = JSON.parse(globalText);
-    } catch (e) {
-      alert('Invalid JSON');
-      return;
-    }
+    const toObj = (rows: MapRow[]) => {
+      const o: any = {};
+      rows.forEach((r) => {
+        const k = r.key.trim();
+        if (k) o[k] = parseFloat(r.points) || 0;
+      });
+      return o;
+    };
+    const cfg = {
+      gender: toObj(globalForm.gender),
+      education: toObj(globalForm.education),
+      military_status: toObj(globalForm.military_status),
+      job_status: toObj(globalForm.job_status),
+      availability: toObj(globalForm.availability),
+      reviewer_weights: toObj(globalForm.reviewer_weights),
+      exp_per_year: parseFloat(globalForm.exp_per_year) || 0,
+    };
     await fetch('http://localhost:5000/save_global', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -118,7 +169,7 @@ export default function PositionForm() {
         <Tab label="Experience" />
       </Tabs>
       {tab === 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
             label="Position ID"
             value={positionId}
@@ -130,12 +181,71 @@ export default function PositionForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          {(
+            [
+              ['gender', 'Gender'],
+              ['education', 'Education'],
+              ['military_status', 'Military Status'],
+              ['job_status', 'Job Status'],
+              ['availability', 'Availability'],
+              ['reviewer_weights', 'Reviewer Weights'],
+            ] as [keyof GlobalForm, string][]
+          ).map(([section, title]) => (
+            <Box key={section}>
+              <Typography variant="subtitle1" gutterBottom>
+                {title}
+              </Typography>
+              {globalForm[section].map((r, idx) => (
+                <Box key={idx} sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+                  <TextField
+                    label="Key"
+                    value={r.key}
+                    onChange={(e) => {
+                      const arr = [...globalForm[section]];
+                      arr[idx] = { ...arr[idx], key: e.target.value };
+                      setGlobalForm({ ...globalForm, [section]: arr });
+                    }}
+                  />
+                  <TextField
+                    label="Points"
+                    type="number"
+                    value={r.points}
+                    onChange={(e) => {
+                      const arr = [...globalForm[section]];
+                      arr[idx] = { ...arr[idx], points: e.target.value };
+                      setGlobalForm({ ...globalForm, [section]: arr });
+                    }}
+                  />
+                  <IconButton
+                    onClick={() => {
+                      const arr = [...globalForm[section]];
+                      arr.splice(idx, 1);
+                      setGlobalForm({ ...globalForm, [section]: arr });
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              ))}
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setGlobalForm({
+                    ...globalForm,
+                    [section]: [...globalForm[section], { key: '', points: '' }],
+                  })
+                }
+                sx={{ mt: 1 }}
+              >
+                Add Row
+              </Button>
+            </Box>
+          ))}
           <TextField
-            label="Global Scoring JSON"
-            value={globalText}
-            onChange={(e) => setGlobalText(e.target.value)}
-            multiline
-            rows={12}
+            label="Experience Points Per Year"
+            type="number"
+            value={globalForm.exp_per_year}
+            onChange={(e) => setGlobalForm({ ...globalForm, exp_per_year: e.target.value })}
           />
           <Button variant="contained" onClick={handleSaveGlobal} sx={{ alignSelf: 'flex-start' }}>
             Save General
