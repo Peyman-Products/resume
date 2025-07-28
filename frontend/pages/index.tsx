@@ -44,23 +44,32 @@ export default function Home() {
   };
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container maxWidth="md" sx={{ py: 5 }}>
       <Head>
         <title>Select Position</title>
       </Head>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h4">Choose Position</Typography>
-        <Button onClick={() => router.push('/admin')}>Admin</Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'center' }}>
+        <Box>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Welcome to Candidate Manager
+          </Typography>
+          <Typography color="text.secondary">
+            Choose a position to manage its candidates
+          </Typography>
+        </Box>
+        <Button variant="contained" onClick={() => router.push('/admin')}>
+          Admin
+        </Button>
       </Box>
       {loading ? (
         <CircularProgress />
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {positions.map((p) => (
             <Grid item key={p.id} xs={12} sm={6} md={4}>
-              <Card sx={{ minWidth: 200 }}>
+              <Card sx={{ minWidth: 220, bgcolor: 'grey.100', boxShadow: 3 }}>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
                     {p.name}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -69,12 +78,12 @@ export default function Home() {
                   <Typography variant="body2">
                     Candidates: {stats[p.id]?.count ?? 0}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" gutterBottom>
                     Experience Items: {stats[p.id]?.exp ?? 0}
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" onClick={() => goto(p.id)}>
+                  <Button variant="contained" size="small" onClick={() => goto(p.id)}>
                     View Candidates
                   </Button>
                 </CardActions>

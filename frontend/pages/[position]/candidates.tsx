@@ -114,18 +114,20 @@ export default function CandidateList() {
       <Head>
         <title>{position} Candidates</title>
       </Head>
-      <Typography variant="h4" gutterBottom>
-        {position} Candidates
-      </Typography>
-      <Button variant="contained" onClick={() => setOpen(true)} sx={{ mb: 2 }}>
-        New Candidate
-      </Button>
-      <TextField
-        label="Search"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{ mb: 2, ml: 2 }}
-      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4">{position} Candidates</Typography>
+        <Button variant="outlined" onClick={() => router.push('/')}>Back</Button>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
+        <Button variant="contained" onClick={() => setOpen(true)}>
+          New Candidate
+        </Button>
+        <TextField
+          label="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </Box>
       {loading ? (
         <CircularProgress />
       ) : (

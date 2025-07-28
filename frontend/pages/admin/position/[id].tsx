@@ -161,9 +161,12 @@ export default function PositionForm() {
       <Head>
         <title>Position Settings</title>
       </Head>
-      <Typography variant="h5" gutterBottom>
-        {id === 'new' ? 'Add Position' : 'Edit Position'}
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5">
+          {id === 'new' ? 'Add Position' : 'Edit Position'}
+        </Typography>
+        <Button variant="outlined" onClick={() => router.push('/admin')}>Back</Button>
+      </Box>
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
         <Tab label="General Score" />
         <Tab label="Experience" />
