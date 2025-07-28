@@ -182,11 +182,15 @@ def index():
     return render_template('index.html', candidates=df.to_dict(orient='records'))
 
 
-@app.route('/admin')
+@app.route('/admin', strict_slashes=False)
 def admin_page():
     """Render admin settings page with current scoring config."""
     config = load_scoring_config()
-    return render_template('admin.html', config=config.get('positions', {}))
+    return render_template(
+        'admin.html',
+        positions=config.get('positions', {}),
+        global_config=config.get('global', {})
+    )
 
 
 @app.route('/save_position', methods=['POST'])
@@ -205,6 +209,19 @@ def save_position():
         'name': name,
         'experience': experience,
     }
+    with open(SCORING_CONFIG_FILE, 'w') as f:
+        json.dump(config, f, indent=2)
+    return jsonify({'status': 'ok'})
+
+
+@app.route('/save_global', methods=['POST'])
+def save_global():
+    """Update global scoring configuration."""
+    data = request.get_json(force=True)
+    if not isinstance(data, dict):
+        return jsonify({'error': 'invalid data'}), 400
+    config = load_scoring_config()
+    config['global'] = data
     with open(SCORING_CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
     return jsonify({'status': 'ok'})
