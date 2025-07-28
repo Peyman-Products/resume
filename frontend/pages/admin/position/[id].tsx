@@ -192,7 +192,7 @@ export default function PositionForm() {
               ['job_status', 'Job Status'],
               ['availability', 'Availability'],
               ['reviewer_weights', 'Reviewer Weights'],
-            ] as [keyof GlobalForm, string][]
+            ] as [keyof Omit<GlobalForm, 'exp_per_year'>, string][]
           ).map(([section, title]) => (
             <Box key={section}>
               <Typography variant="subtitle1" gutterBottom>
