@@ -1,3 +1,14 @@
 # Ignore node modules
 node_modules/
 frontend/node_modules/
+
+# Python caches and virtual environments
+__pycache__/
+*.pyc
+.mypy_cache/
+venv/
+
+# Uploaded or generated files
+resumes/
+candidates.xlsx
+frontend/tsconfig.tsbuildinfo
