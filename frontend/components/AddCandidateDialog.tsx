@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Button,
   Dialog,
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export default function AddCandidateDialog({ open, onClose, onAdded, position }: Props) {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [gender, setGender] = useState('Male');
@@ -38,16 +40,20 @@ export default function AddCandidateDialog({ open, onClose, onAdded, position }:
     if (resume) {
       form.append('resume', resume);
     }
-    await fetch('http://localhost:5000/api/candidates', {
+    const res = await fetch('http://localhost:5000/api/candidates', {
       method: 'POST',
       body: form,
     });
+    const data = await res.json();
     setName('');
     setMobile('');
     setGender('Male');
     setResume(null);
     onAdded();
     onClose();
+    if (data?.id) {
+      router.push(`/edit/${data.id}`);
+    }
   };
 
   return (

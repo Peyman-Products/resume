@@ -35,6 +35,7 @@ export default function EditPage() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [tab, setTab] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [expConfig, setExpConfig] = useState<Record<string, any>>({});
 
   useEffect(() => {
     if (!id) return;
@@ -57,6 +58,14 @@ export default function EditPage() {
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (!candidate?.position_type) return;
+    const role = String(candidate.position_type).toLowerCase();
+    fetch(`http://localhost:5000/api/scoring/${role}`)
+      .then((res) => res.json())
+      .then((data) => setExpConfig(data.experience || {}));
+  }, [candidate?.position_type]);
 
   const updateField = (key: string, value: any) => {
     if (!candidate) return;
@@ -332,105 +341,20 @@ export default function EditPage() {
       {tab === 1 && (
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_dashboard_b2b === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_dashboard_b2b', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Designed B2B dashboards"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_dynamic_reports === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_dynamic_reports', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Dynamic reporting interfaces"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_role_based_access === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_role_based_access', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Role-based access UI"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_pos_mobile === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_pos_mobile', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="POS/mobile interfaces"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_data_sync === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_data_sync', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Syncing external data"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_multistep_forms === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_multistep_forms', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Multi-step forms"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_low_digital_users === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_low_digital_users', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Low-digital-literacy users"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_multilingual === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_multilingual', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Multilingual systems"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={candidate.exp_portfolio_relevant === 'Yes'}
-                  onChange={(e) =>
-                    updateField('exp_portfolio_relevant', e.target.checked ? 'Yes' : '')
-                  }
-                />
-              }
-              label="Portfolio has relevant work"
-            />
+            {Object.entries(expConfig).map(([key, info]) => (
+              <FormControlLabel
+                key={key}
+                control={
+                  <Checkbox
+                    checked={candidate[key] === 'Yes'}
+                    onChange={(e) =>
+                      updateField(key, e.target.checked ? 'Yes' : '')
+                    }
+                  />
+                }
+                label={(info as any).label || key}
+              />
+            ))}
           </Box>
           <TextField
             label="Other notes about technical fit"
