@@ -1,0 +1,60 @@
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import {
+  Container,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
+
+interface Position {
+  id: string;
+  name: string;
+}
+
+export default function AdminPage() {
+  const [positions, setPositions] = useState<Position[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/positions')
+      .then((res) => res.json())
+      .then((data) => setPositions(data));
+  }, []);
+
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Head>
+        <title>Admin</title>
+      </Head>
+      <Typography variant="h4" gutterBottom>
+        Positions
+      </Typography>
+      <Button
+        variant="contained"
+        onClick={() => router.push('/admin/position/new')}
+        sx={{ mb: 2 }}
+      >
+        Add Position
+      </Button>
+      <List>
+        {positions.map((p) => (
+          <ListItem
+            key={p.id}
+            divider
+            secondaryAction={
+              <Button onClick={() => router.push(`/admin/position/${p.id}`)}>
+                Edit
+              </Button>
+            }
+          >
+            <ListItemText primary={p.name} secondary={p.id} />
+          </ListItem>
+        ))}
+      </List>
+    </Container>
+  );
+}
