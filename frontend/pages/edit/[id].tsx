@@ -141,6 +141,7 @@ export default function EditPage() {
             <TextField
               select
               label="Gender"
+              sx={{ minWidth: 200 }}
               value={candidate.gender || ''}
               onChange={(e) => updateField('gender', e.target.value)}
             >
@@ -154,14 +155,16 @@ export default function EditPage() {
               onChange={(e) => updateField('year_of_birth', e.target.value)}
             />
           </Box>
+
           <Typography fontWeight="bold" color="success.main">
-            Background
+            Education &amp; Experience
           </Typography>
           <Divider />
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <TextField
               select
               label="Marital Status"
+              sx={{ minWidth: 200 }}
               value={candidate.marital_status || ''}
               onChange={(e) => updateField('marital_status', e.target.value)}
             >
@@ -172,6 +175,7 @@ export default function EditPage() {
             <TextField
               select
               label="Education Level"
+              sx={{ minWidth: 200 }}
               value={candidate.education || ''}
               onChange={(e) => updateField('education', e.target.value)}
             >
@@ -194,6 +198,7 @@ export default function EditPage() {
             <TextField
               select
               label="Military Status"
+              sx={{ minWidth: 200 }}
               value={candidate.military_status || ''}
               onChange={(e) => updateField('military_status', e.target.value)}
             >
@@ -203,9 +208,17 @@ export default function EditPage() {
               <MenuItem value="In Progress">In Progress</MenuItem>
               <MenuItem value="N/A">N/A</MenuItem>
             </TextField>
+          </Box>
+
+          <Typography fontWeight="bold" color="secondary.main">
+            Employment
+          </Typography>
+          <Divider />
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <TextField
               select
               label="Current Job Status"
+              sx={{ minWidth: 200 }}
               value={candidate.job_status || ''}
               onChange={(e) => updateField('job_status', e.target.value)}
             >
@@ -217,6 +230,7 @@ export default function EditPage() {
             <TextField
               select
               label="Status"
+              sx={{ minWidth: 200 }}
               value={candidate.status || ''}
               onChange={(e) => updateField('status', e.target.value)}
             >
@@ -229,6 +243,7 @@ export default function EditPage() {
             <TextField
               select
               label="Can Start From"
+              sx={{ minWidth: 200 }}
               value={candidate.can_start_from || ''}
               onChange={(e) => updateField('can_start_from', e.target.value)}
             >
@@ -248,6 +263,13 @@ export default function EditPage() {
               }
               label="Okay with 9-6 Work?"
             />
+          </Box>
+
+          <Typography fontWeight="bold" color="info.main">
+            Contact &amp; Source
+          </Typography>
+          <Divider />
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <TextField
               label="Telegram ID"
               value={candidate.telegram_id || ''}
@@ -256,6 +278,7 @@ export default function EditPage() {
             <TextField
               select
               label="Source of News"
+              sx={{ minWidth: 200 }}
               value={candidate.source_of_news || ''}
               onChange={(e) => updateField('source_of_news', e.target.value)}
             >
@@ -264,6 +287,13 @@ export default function EditPage() {
               <MenuItem value="Jobinja">Jobinja</MenuItem>
               <MenuItem value="Jobvision">Jobvision</MenuItem>
             </TextField>
+          </Box>
+
+          <Typography fontWeight="bold" color="warning.main">
+            Portfolio &amp; Scores
+          </Typography>
+          <Divider />
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -299,11 +329,6 @@ export default function EditPage() {
               label="Okay with Design Task?"
             />
             <TextField
-              label="City / Area in Tehran"
-              value={candidate.location || ''}
-              onChange={(e) => updateField('location', e.target.value)}
-            />
-            <TextField
               label="Interviewer Score"
               type="number"
               value={candidate.interviewer_score || ''}
@@ -314,6 +339,18 @@ export default function EditPage() {
               type="number"
               value={candidate.look_score || ''}
               onChange={(e) => updateField('look_score', e.target.value)}
+            />
+          </Box>
+
+          <Typography fontWeight="bold" color="secondary.main">
+            Location &amp; Resume
+          </Typography>
+          <Divider />
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <TextField
+              label="City / Area in Tehran"
+              value={candidate.location || ''}
+              onChange={(e) => updateField('location', e.target.value)}
             />
             <Button variant="outlined" component="label">
               Upload Resume
@@ -388,6 +425,7 @@ export default function EditPage() {
               <TextField
                 select
                 label="Day"
+                sx={{ minWidth: 200 }}
                 value={m.day || ''}
                 onChange={(e) => updateMeeting(idx, 'day', e.target.value)}
               >
@@ -404,6 +442,7 @@ export default function EditPage() {
               <TextField
                 select
                 label="Type"
+                sx={{ minWidth: 200 }}
                 value={m.location || ''}
                 onChange={(e) => updateMeeting(idx, 'location', e.target.value)}
               >
@@ -413,6 +452,7 @@ export default function EditPage() {
               <TextField
                 select
                 label="Status"
+                sx={{ minWidth: 200 }}
                 value={m.status || ''}
                 onChange={(e) => updateMeeting(idx, 'status', e.target.value)}
               >
