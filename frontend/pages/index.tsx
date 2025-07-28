@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Container, Typography, CircularProgress, Button, Grid, Box } from '@mui/material';
+import {
+  Container,
+  Typography,
+  CircularProgress,
+  Button,
+  Grid,
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+} from '@mui/material';
 import Head from 'next/head';
 
 export default function Home() {
@@ -8,14 +18,25 @@ export default function Home() {
   interface Pos { id: string; name: string }
   const [positions, setPositions] = useState<Pos[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<Record<string, {count: number; exp: number}>>({});
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/positions')
-      .then((res) => res.json())
-      .then((data) => {
-        setPositions(data);
-        setLoading(false);
-      });
+    async function load() {
+      const res = await fetch('http://localhost:5000/api/positions');
+      const data = await res.json();
+      setPositions(data);
+      const st: Record<string, {count:number; exp:number}> = {};
+      for (const p of data) {
+        const [candRes, scRes] = await Promise.all([
+          fetch(`http://localhost:5000/api/candidates?position=${p.id}`).then(r => r.json()),
+          fetch(`http://localhost:5000/api/scoring/${p.id}`).then(r => r.json()),
+        ]);
+        st[p.id] = { count: candRes.length, exp: Object.keys(scRes.experience || {}).length };
+      }
+      setStats(st);
+      setLoading(false);
+    }
+    load();
   }, []);
 
   const goto = (pos: string) => {
@@ -36,10 +57,28 @@ export default function Home() {
       ) : (
         <Grid container spacing={2}>
           {positions.map((p) => (
-            <Grid item key={p.id}>
-              <Button variant="outlined" onClick={() => goto(p.id)}>
-                {p.name}
-              </Button>
+            <Grid item key={p.id} xs={12} sm={6} md={4}>
+              <Card sx={{ minWidth: 200 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {p.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    ID: {p.id}
+                  </Typography>
+                  <Typography variant="body2">
+                    Candidates: {stats[p.id]?.count ?? 0}
+                  </Typography>
+                  <Typography variant="body2">
+                    Experience Items: {stats[p.id]?.exp ?? 0}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button size="small" onClick={() => goto(p.id)}>
+                    View Candidates
+                  </Button>
+                </CardActions>
+              </Card>
             </Grid>
           ))}
         </Grid>

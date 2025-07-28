@@ -9,6 +9,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useRouter } from 'next/router';
+import ScoreBreakdown from './ScoreBreakdown';
 
 interface Candidate {
   [key: string]: any;
@@ -82,6 +83,8 @@ export default function ViewDrawer({ open, onClose, candidate }: Props) {
                   </a>
                 </Typography>
               )}
+              <Divider sx={{ my: 1 }} />
+              <ScoreBreakdown candidate={candidate} />
             </Box>
           )}
           {tab === 1 && (
