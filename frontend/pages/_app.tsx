@@ -16,8 +16,8 @@ const getTheme = (mode: PaletteMode) =>
       primary: { main: '#F7A043' },
       secondary: { main: '#FBC978' },
       background: {
-        default: mode === 'light' ? '#FEF8EE' : '#363636',
-        paper: mode === 'light' ? '#fff' : '#363636',
+        default: mode === 'light' ? '#ffffff' : '#363636',
+        paper: mode === 'light' ? '#ffffff' : '#363636',
       },
       text: {
         primary: mode === 'light' ? '#363636' : '#fff',

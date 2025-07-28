@@ -67,7 +67,7 @@ export default function Home() {
         <Grid container spacing={3}>
           {positions.map((p) => (
             <Grid item key={p.id} xs={12} sm={6} md={4}>
-              <Card sx={{ minWidth: 220, bgcolor: 'grey.100', boxShadow: 3 }}>
+              <Card sx={{ minWidth: 220, bgcolor: 'grey.50', boxShadow: 1 }}>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     {p.name}

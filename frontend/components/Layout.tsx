@@ -13,7 +13,10 @@ interface Props {
 export default function Layout({ children, darkMode, toggleDarkMode }: Props) {
   return (
     <Box>
-      <AppBar position="static" color="primary">
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: '#ffffff', color: 'text.primary' }}
+      >
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Candidate Manager

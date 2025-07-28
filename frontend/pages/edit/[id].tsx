@@ -13,7 +13,9 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
+  IconButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Candidate {
   [key: string]: any;
@@ -79,6 +81,13 @@ export default function EditPage() {
   };
 
   const addMeeting = () => setMeetings([...meetings, {}]);
+
+  const handleDelete = async () => {
+    if (!candidate) return;
+    if (!confirm('Delete this candidate?')) return;
+    await fetch(`http://localhost:5000/delete/${candidate.id}`, { method: 'POST' });
+    router.push('/');
+  };
 
   const handleSave = async () => {
     if (!candidate) return;
@@ -468,11 +477,14 @@ export default function EditPage() {
           </Button>
         </Box>
       )}
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Button variant="contained" onClick={handleSave} sx={{ mr: 1 }}>
           Save
         </Button>
         <Button variant="outlined" onClick={() => router.push('/')}>Back</Button>
+        <IconButton color="error" onClick={handleDelete} sx={{ ml: 'auto' }}>
+          <DeleteIcon />
+        </IconButton>
       </Box>
     </Container>
   );
