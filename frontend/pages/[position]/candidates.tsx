@@ -158,9 +158,11 @@ export default function CandidateList() {
               status: c.status || '-',
             }))}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
-            disableSelectionOnClick
+            pageSizeOptions={[5, 10]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            }}
+            disableRowSelectionOnClick
             autoHeight
           />
         </div>
