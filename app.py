@@ -193,6 +193,25 @@ def admin_page():
     )
 
 
+@app.route('/admin/position/<pos_id>', methods=['GET'])
+def position_form(pos_id):
+    """Page for adding or editing a single position."""
+    config = load_scoring_config()
+    positions = config.get('positions', {})
+    data = {'id': '', 'name': '', 'experience': {}}
+    if pos_id != 'new':
+        pos = positions.get(pos_id)
+        if not pos:
+            return redirect(url_for('admin_page'))
+        data['id'] = pos_id
+        data['name'] = pos.get('name', pos_id)
+        data['experience'] = pos.get('experience', {})
+    else:
+        data['id'] = ''
+        data['name'] = request.args.get('name', '')
+    return render_template('position_form.html', position=data)
+
+
 @app.route('/save_position', methods=['POST'])
 def save_position():
     """Create or update a position and its score fields."""
