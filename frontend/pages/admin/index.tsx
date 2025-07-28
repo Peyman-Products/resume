@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Box,
 } from '@mui/material';
 
 interface Position {

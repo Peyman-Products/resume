@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   IconButton,
+  Box,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -110,7 +111,7 @@ export default function CandidateList() {
   );
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container sx={{ mt: 4 }} maxWidth="xl" disableGutters>
       <Head>
         <title>{position} Candidates</title>
       </Head>
