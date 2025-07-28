@@ -16,11 +16,11 @@ const getTheme = (mode: PaletteMode) =>
       primary: { main: '#F7A043' },
       secondary: { main: '#FBC978' },
       background: {
-        default: mode === 'light' ? '#ffffff' : '#363636',
-        paper: mode === 'light' ? '#ffffff' : '#363636',
+        default: mode === 'light' ? '#ffffff' : '#000000',
+        paper: mode === 'light' ? '#ffffff' : '#000000',
       },
       text: {
-        primary: mode === 'light' ? '#363636' : '#fff',
+        primary: mode === 'light' ? '#363636' : '#ffffff',
       },
     },
     typography: {
@@ -36,11 +36,19 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     setMode((m) => (m === 'light' ? 'dark' : 'light'));
 
   React.useEffect(() => {
+    const stored = window.localStorage.getItem('color-mode') as PaletteMode | null;
+    if (stored === 'light' || stored === 'dark') {
+      setMode(stored);
+    }
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
+
+  React.useEffect(() => {
+    window.localStorage.setItem('color-mode', mode);
+  }, [mode]);
 
   return (
     <React.Fragment>
