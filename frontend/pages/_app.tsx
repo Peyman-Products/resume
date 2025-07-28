@@ -1,15 +1,40 @@
 import * as React from 'react';
 import type {AppProps} from 'next/app';
 import Head from 'next/head';
-import {CssBaseline, ThemeProvider, createTheme} from '@mui/material';
+import {
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
+  PaletteMode,
+} from '@mui/material';
+import Layout from '../components/Layout';
 
-const theme = createTheme({
-  typography: {
-    fontFamily: 'Vazirmatn, sans-serif',
-  },
-});
+const getTheme = (mode: PaletteMode) =>
+  createTheme({
+    palette: {
+      mode,
+      primary: { main: '#F7A043' },
+      secondary: { main: '#FBC978' },
+      background: {
+        default: mode === 'light' ? '#FEF8EE' : '#363636',
+        paper: mode === 'light' ? '#fff' : '#363636',
+      },
+      text: {
+        primary: mode === 'light' ? '#363636' : '#fff',
+      },
+    },
+    typography: {
+      fontFamily: 'Vazirmatn, sans-serif',
+    },
+  });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const [mode, setMode] = React.useState<PaletteMode>('light');
+  const theme = React.useMemo(() => getTheme(mode), [mode]);
+
+  const toggleDarkMode = () =>
+    setMode((m) => (m === 'light' ? 'dark' : 'light'));
+
   React.useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentElement) {
@@ -28,7 +53,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <Layout darkMode={mode === 'dark'} toggleDarkMode={toggleDarkMode}>
+          <Component {...pageProps} />
+        </Layout>
       </ThemeProvider>
     </React.Fragment>
   );
