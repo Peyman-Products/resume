@@ -57,6 +57,17 @@ npm run build
 npm start
 ```
 
+### Checking TypeScript
+
+The frontend codebase is written in TypeScript. You can verify that all files
+compile correctly by running the TypeScript compiler in the `frontend` folder:
+
+```bash
+npx tsc --noEmit
+```
+
+This command performs a type check without generating any output files.
+
 ## Usage
 
 - Access `http://localhost:3000` to view the candidate list rendered using Material UI components.
