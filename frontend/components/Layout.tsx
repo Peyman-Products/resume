@@ -1,10 +1,18 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import Link from 'next/link';
-import { AppBar, Toolbar, Typography, Button, IconButton, Box, useTheme } from '@mui/material';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import { ReactNode } from "react";
+import Link from "next/link";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Box,
+  useTheme,
+} from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 interface Props {
   children?: ReactNode;
@@ -15,10 +23,15 @@ interface Props {
 export default function Layout({ children, darkMode, toggleDarkMode }: Props) {
   const theme = useTheme();
   return (
-    <Box sx={{ backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        minHeight: "100vh",
+      }}
+    >
       <AppBar
         position="static"
-        sx={{ bgcolor: 'background.paper', color: 'text.primary' }}
+        sx={{ bgcolor: "background.paper", color: "text.primary" }}
       >
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -38,7 +51,10 @@ export default function Layout({ children, darkMode, toggleDarkMode }: Props) {
       <Box component="main" sx={{ px: 2, py: 3 }}>
         {children}
       </Box>
-      <Box component="footer" sx={{ textAlign: 'center', py: 1, fontSize: '0.8rem' }}>
+      <Box
+        component="footer"
+        sx={{ textAlign: "center", py: 1, fontSize: "0.8rem" }}
+      >
         © {new Date().getFullYear()}
       </Box>
     </Box>
