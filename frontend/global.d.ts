@@ -1,4 +1,4 @@
-declare module 'react' {
+declare module "react" {
   export type ReactNode = any;
   export function useState<T>(init: T | (() => T)): [T, (v: T) => void];
   export function useEffect(fn: () => void | (() => void), deps?: any[]): void;
@@ -6,17 +6,21 @@ declare module 'react' {
   export const Fragment: any;
   export namespace JSX {
     interface Element {}
-    interface IntrinsicElements { [elem: string]: any; }
+    interface IntrinsicElements {
+      [elem: string]: any;
+    }
   }
 }
 
-declare module 'next/app' { export type AppProps = any; }
-declare module 'next/head';
-declare module 'next/document';
-declare module 'next/link';
-declare module 'next/router';
+declare module "next/app" {
+  export type AppProps = any;
+}
+declare module "next/head";
+declare module "next/document";
+declare module "next/link";
+declare module "next/router";
 
-declare module '@mui/material' {
+declare module "@mui/material" {
   export const Button: any;
   export const AppBar: any;
   export const Toolbar: any;
@@ -56,9 +60,12 @@ declare module '@mui/material' {
   export type PaletteMode = any;
 }
 
-declare module '@mui/icons-material/*' { const icon: any; export default icon; }
+declare module "@mui/icons-material/*" {
+  const icon: any;
+  export default icon;
+}
 
-declare module '@mui/x-data-grid' {
+declare module "@mui/x-data-grid" {
   export const DataGrid: any;
   export type GridColDef = any;
 }

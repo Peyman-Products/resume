@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import {
   Container,
   Typography,
@@ -10,28 +10,40 @@ import {
   Card,
   CardContent,
   CardActions,
-} from '@mui/material';
-import Head from 'next/head';
+} from "@mui/material";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
-  interface Pos { id: string; name: string }
+  interface Pos {
+    id: string;
+    name: string;
+  }
   const [positions, setPositions] = useState<Pos[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<Record<string, {count: number; exp: number}>>({});
+  const [stats, setStats] = useState<
+    Record<string, { count: number; exp: number }>
+  >({});
 
   useEffect(() => {
     async function load() {
-      const res = await fetch('http://localhost:5000/api/positions');
+      const res = await fetch("http://localhost:5000/api/positions");
       const data = await res.json();
       setPositions(data);
-      const st: Record<string, {count:number; exp:number}> = {};
+      const st: Record<string, { count: number; exp: number }> = {};
       for (const p of data) {
         const [candRes, scRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/candidates?position=${p.id}`).then(r => r.json()),
-          fetch(`http://localhost:5000/api/scoring/${p.id}`).then(r => r.json()),
+          fetch(`http://localhost:5000/api/candidates?position=${p.id}`).then(
+            (r) => r.json(),
+          ),
+          fetch(`http://localhost:5000/api/scoring/${p.id}`).then((r) =>
+            r.json(),
+          ),
         ]);
-        st[p.id] = { count: candRes.length, exp: Object.keys(scRes.experience || {}).length };
+        st[p.id] = {
+          count: candRes.length,
+          exp: Object.keys(scRes.experience || {}).length,
+        };
       }
       setStats(st);
       setLoading(false);
@@ -48,7 +60,14 @@ export default function Home() {
       <Head>
         <title>Select Position</title>
       </Head>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mb: 4,
+          alignItems: "center",
+        }}
+      >
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
             Welcome to Candidate Manager
@@ -57,7 +76,7 @@ export default function Home() {
             Choose a position to manage its candidates
           </Typography>
         </Box>
-        <Button variant="contained" onClick={() => router.push('/admin')}>
+        <Button variant="contained" onClick={() => router.push("/admin")}>
           Admin
         </Button>
       </Box>
@@ -67,7 +86,7 @@ export default function Home() {
         <Grid container spacing={3}>
           {positions.map((p) => (
             <Grid item key={p.id} xs={12} sm={6} md={4}>
-              <Card sx={{ minWidth: 220, bgcolor: 'grey.50', boxShadow: 1 }}>
+              <Card sx={{ minWidth: 220, bgcolor: "grey.50", boxShadow: 1 }}>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     {p.name}
@@ -83,7 +102,11 @@ export default function Home() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button variant="contained" size="small" onClick={() => goto(p.id)}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => goto(p.id)}
+                  >
                     View Candidates
                   </Button>
                 </CardActions>

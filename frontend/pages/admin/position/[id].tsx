@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Head from "next/head";
 import {
   Container,
   Typography,
@@ -10,8 +10,8 @@ import {
   Box,
   Button,
   IconButton,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ExpRow {
   key: string;
@@ -37,23 +37,23 @@ interface GlobalForm {
 export default function PositionForm() {
   const router = useRouter();
   const { id } = router.query;
-  const [positionId, setPositionId] = useState('');
-  const [name, setName] = useState('');
+  const [positionId, setPositionId] = useState("");
+  const [name, setName] = useState("");
   const [rows, setRows] = useState<ExpRow[]>([]);
   const [globalForm, setGlobalForm] = useState<GlobalForm>({
-    gender: [{ key: '', points: '' }],
-    education: [{ key: '', points: '' }],
-    military_status: [{ key: '', points: '' }],
-    job_status: [{ key: '', points: '' }],
-    availability: [{ key: '', points: '' }],
-    reviewer_weights: [{ key: '', points: '' }],
-    exp_per_year: '',
+    gender: [{ key: "", points: "" }],
+    education: [{ key: "", points: "" }],
+    military_status: [{ key: "", points: "" }],
+    job_status: [{ key: "", points: "" }],
+    availability: [{ key: "", points: "" }],
+    reviewer_weights: [{ key: "", points: "" }],
+    exp_per_year: "",
   });
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!id) return;
-    if (id !== 'new') {
+    if (id !== "new") {
       fetch(`http://localhost:5000/api/scoring/${id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -65,24 +65,24 @@ export default function PositionForm() {
             label: exp[k].label || k,
             points: String(exp[k].points || 0),
           }));
-          if (arr.length === 0) arr.push({ key: '', label: '', points: '' });
+          if (arr.length === 0) arr.push({ key: "", label: "", points: "" });
           setRows(arr);
         });
     } else {
-      setPositionId('');
-      setName('');
-      setRows([{ key: '', label: '', points: '' }]);
+      setPositionId("");
+      setName("");
+      setRows([{ key: "", label: "", points: "" }]);
     }
-    fetch('http://localhost:5000/api/scoring/global')
+    fetch("http://localhost:5000/api/scoring/global")
       .then((res) => res.json())
       .then((data) => {
         const toRows = (obj: any): MapRow[] => {
-          if (!obj) return [{ key: '', points: '' }];
+          if (!obj) return [{ key: "", points: "" }];
           const entries = Object.entries(obj).map(([k, v]) => ({
             key: String(k),
             points: String(v as any),
           }));
-          return entries.length ? entries : [{ key: '', points: '' }];
+          return entries.length ? entries : [{ key: "", points: "" }];
         };
         setGlobalForm({
           gender: toRows(data.gender),
@@ -91,7 +91,7 @@ export default function PositionForm() {
           job_status: toRows(data.job_status),
           availability: toRows(data.availability),
           reviewer_weights: toRows(data.reviewer_weights),
-          exp_per_year: String(data.exp_per_year ?? ''),
+          exp_per_year: String(data.exp_per_year ?? ""),
         });
       });
   }, [id]);
@@ -102,7 +102,7 @@ export default function PositionForm() {
     setRows(copy);
   };
 
-  const addRow = () => setRows([...rows, { key: '', label: '', points: '' }]);
+  const addRow = () => setRows([...rows, { key: "", label: "", points: "" }]);
 
   const removeRow = (idx: number) => {
     const copy = [...rows];
@@ -120,12 +120,16 @@ export default function PositionForm() {
         };
       }
     });
-    await fetch('http://localhost:5000/save_position', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: positionId.trim(), name: name.trim(), experience: exp }),
+    await fetch("http://localhost:5000/save_position", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: positionId.trim(),
+        name: name.trim(),
+        experience: exp,
+      }),
     });
-    router.push('/admin');
+    router.push("/admin");
   };
 
   const handleSaveGlobal = async () => {
@@ -146,12 +150,12 @@ export default function PositionForm() {
       reviewer_weights: toObj(globalForm.reviewer_weights),
       exp_per_year: parseFloat(globalForm.exp_per_year) || 0,
     };
-    await fetch('http://localhost:5000/save_global', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("http://localhost:5000/save_global", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cfg),
     });
-    alert('Saved');
+    alert("Saved");
   };
 
   if (!id) return null;
@@ -161,23 +165,32 @@ export default function PositionForm() {
       <Head>
         <title>Position Settings</title>
       </Head>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         <Typography variant="h5">
-          {id === 'new' ? 'Add Position' : 'Edit Position'}
+          {id === "new" ? "Add Position" : "Edit Position"}
         </Typography>
-        <Button variant="outlined" onClick={() => router.push('/admin')}>Back</Button>
+        <Button variant="outlined" onClick={() => router.push("/admin")}>
+          Back
+        </Button>
       </Box>
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
         <Tab label="General Score" />
         <Tab label="Experience" />
       </Tabs>
       {tab === 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <TextField
             label="Position ID"
             value={positionId}
             onChange={(e) => setPositionId(e.target.value)}
-            disabled={id !== 'new'}
+            disabled={id !== "new"}
           />
           <TextField
             label="Position Name"
@@ -186,20 +199,23 @@ export default function PositionForm() {
           />
           {(
             [
-              ['gender', 'Gender'],
-              ['education', 'Education'],
-              ['military_status', 'Military Status'],
-              ['job_status', 'Job Status'],
-              ['availability', 'Availability'],
-              ['reviewer_weights', 'Reviewer Weights'],
-            ] as [keyof Omit<GlobalForm, 'exp_per_year'>, string][]
+              ["gender", "Gender"],
+              ["education", "Education"],
+              ["military_status", "Military Status"],
+              ["job_status", "Job Status"],
+              ["availability", "Availability"],
+              ["reviewer_weights", "Reviewer Weights"],
+            ] as [keyof Omit<GlobalForm, "exp_per_year">, string][]
           ).map(([section, title]) => (
             <Box key={section}>
               <Typography variant="subtitle1" gutterBottom>
                 {title}
               </Typography>
               {globalForm[section].map((r, idx) => (
-                <Box key={idx} sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+                <Box
+                  key={idx}
+                  sx={{ display: "flex", gap: 1, mt: 1, flexWrap: "wrap" }}
+                >
                   <TextField
                     label="Key"
                     value={r.key}
@@ -235,7 +251,10 @@ export default function PositionForm() {
                 onClick={() =>
                   setGlobalForm({
                     ...globalForm,
-                    [section]: [...globalForm[section], { key: '', points: '' }],
+                    [section]: [
+                      ...globalForm[section],
+                      { key: "", points: "" },
+                    ],
                   })
                 }
                 sx={{ mt: 1 }}
@@ -248,42 +267,56 @@ export default function PositionForm() {
             label="Experience Points Per Year"
             type="number"
             value={globalForm.exp_per_year}
-            onChange={(e) => setGlobalForm({ ...globalForm, exp_per_year: e.target.value })}
+            onChange={(e) =>
+              setGlobalForm({ ...globalForm, exp_per_year: e.target.value })
+            }
           />
-          <Button variant="contained" onClick={handleSaveGlobal} sx={{ alignSelf: 'flex-start' }}>
+          <Button
+            variant="contained"
+            onClick={handleSaveGlobal}
+            sx={{ alignSelf: "flex-start" }}
+          >
             Save General
           </Button>
         </Box>
       )}
       {tab === 1 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {rows.map((r, idx) => (
-            <Box key={idx} sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <Box key={idx} sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
               <TextField
                 label="Key"
                 value={r.key}
-                onChange={(e) => updateRow(idx, 'key', e.target.value)}
+                onChange={(e) => updateRow(idx, "key", e.target.value)}
               />
               <TextField
                 label="Label"
                 value={r.label}
-                onChange={(e) => updateRow(idx, 'label', e.target.value)}
+                onChange={(e) => updateRow(idx, "label", e.target.value)}
               />
               <TextField
                 label="Points"
                 type="number"
                 value={r.points}
-                onChange={(e) => updateRow(idx, 'points', e.target.value)}
+                onChange={(e) => updateRow(idx, "points", e.target.value)}
               />
               <IconButton onClick={() => removeRow(idx)}>
                 <DeleteIcon />
               </IconButton>
             </Box>
           ))}
-          <Button variant="outlined" onClick={addRow} sx={{ alignSelf: 'flex-start' }}>
+          <Button
+            variant="outlined"
+            onClick={addRow}
+            sx={{ alignSelf: "flex-start" }}
+          >
             Add Row
           </Button>
-          <Button variant="contained" onClick={handleSavePosition} sx={{ alignSelf: 'flex-start' }}>
+          <Button
+            variant="contained"
+            onClick={handleSavePosition}
+            sx={{ alignSelf: "flex-start" }}
+          >
             Save Position
           </Button>
         </Box>

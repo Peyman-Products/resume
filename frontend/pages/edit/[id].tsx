@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
   Container,
   TextField,
@@ -14,8 +14,8 @@ import {
   Checkbox,
   Divider,
   IconButton,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Candidate {
   [key: string]: any;
@@ -84,36 +84,38 @@ export default function EditPage() {
 
   const handleDelete = async () => {
     if (!candidate) return;
-    if (!confirm('Delete this candidate?')) return;
-    await fetch(`http://localhost:5000/delete/${candidate.id}`, { method: 'POST' });
-    router.push('/');
+    if (!confirm("Delete this candidate?")) return;
+    await fetch(`http://localhost:5000/delete/${candidate.id}`, {
+      method: "POST",
+    });
+    router.push("/");
   };
 
   const handleSave = async () => {
     if (!candidate) return;
     const form = new FormData();
     Object.keys(candidate).forEach((key) => {
-      if (key === 'id' || key === 'meetings_list') return;
+      if (key === "id" || key === "meetings_list") return;
       const val = candidate[key];
       if (val !== undefined && val !== null) {
         form.append(key, String(val));
       }
     });
     meetings.forEach((m) => {
-      form.append('meeting_date[]', m.date || '');
-      form.append('meeting_day[]', m.day || '');
-      form.append('meeting_time[]', m.time || '');
-      form.append('meeting_location[]', m.location || '');
-      form.append('meeting_status[]', m.status || '');
+      form.append("meeting_date[]", m.date || "");
+      form.append("meeting_day[]", m.day || "");
+      form.append("meeting_time[]", m.time || "");
+      form.append("meeting_location[]", m.location || "");
+      form.append("meeting_status[]", m.status || "");
     });
     if (resumeFile) {
-      form.append('resume', resumeFile);
+      form.append("resume", resumeFile);
     }
     await fetch(`http://localhost:5000/edit/${id}`, {
-      method: 'POST',
+      method: "POST",
       body: form,
     });
-    router.push('/');
+    router.push("/");
   };
 
   if (loading) return <CircularProgress />;
@@ -131,28 +133,28 @@ export default function EditPage() {
         <Tab label="Meetings" />
       </Tabs>
       {tab === 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Typography fontWeight="bold" color="primary.main">
             Personal Info
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               label="Full Name"
-              value={candidate.name || ''}
-              onChange={(e) => updateField('name', e.target.value)}
+              value={candidate.name || ""}
+              onChange={(e) => updateField("name", e.target.value)}
             />
             <TextField
               label="Mobile Number"
-              value={candidate.mobile || ''}
-              onChange={(e) => updateField('mobile', e.target.value)}
+              value={candidate.mobile || ""}
+              onChange={(e) => updateField("mobile", e.target.value)}
             />
             <TextField
               select
               label="Gender"
               sx={{ minWidth: 200 }}
-              value={candidate.gender || ''}
-              onChange={(e) => updateField('gender', e.target.value)}
+              value={candidate.gender || ""}
+              onChange={(e) => updateField("gender", e.target.value)}
             >
               <MenuItem value="Male">Male</MenuItem>
               <MenuItem value="Female">Female</MenuItem>
@@ -160,8 +162,8 @@ export default function EditPage() {
             <TextField
               label="Year of Birth"
               type="number"
-              value={candidate.year_of_birth || ''}
-              onChange={(e) => updateField('year_of_birth', e.target.value)}
+              value={candidate.year_of_birth || ""}
+              onChange={(e) => updateField("year_of_birth", e.target.value)}
             />
           </Box>
 
@@ -169,13 +171,13 @@ export default function EditPage() {
             Education &amp; Experience
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               select
               label="Marital Status"
               sx={{ minWidth: 200 }}
-              value={candidate.marital_status || ''}
-              onChange={(e) => updateField('marital_status', e.target.value)}
+              value={candidate.marital_status || ""}
+              onChange={(e) => updateField("marital_status", e.target.value)}
             >
               <MenuItem value="">Select</MenuItem>
               <MenuItem value="Single">Single</MenuItem>
@@ -185,8 +187,8 @@ export default function EditPage() {
               select
               label="Education Level"
               sx={{ minWidth: 200 }}
-              value={candidate.education || ''}
-              onChange={(e) => updateField('education', e.target.value)}
+              value={candidate.education || ""}
+              onChange={(e) => updateField("education", e.target.value)}
             >
               <MenuItem value="">Select</MenuItem>
               <MenuItem value="Diploma">Diploma</MenuItem>
@@ -195,21 +197,23 @@ export default function EditPage() {
             </TextField>
             <TextField
               label="Major / Field"
-              value={candidate.major || ''}
-              onChange={(e) => updateField('major', e.target.value)}
+              value={candidate.major || ""}
+              onChange={(e) => updateField("major", e.target.value)}
             />
             <TextField
               label="Years of Experience"
               type="number"
-              value={candidate.years_of_experience || ''}
-              onChange={(e) => updateField('years_of_experience', e.target.value)}
+              value={candidate.years_of_experience || ""}
+              onChange={(e) =>
+                updateField("years_of_experience", e.target.value)
+              }
             />
             <TextField
               select
               label="Military Status"
               sx={{ minWidth: 200 }}
-              value={candidate.military_status || ''}
-              onChange={(e) => updateField('military_status', e.target.value)}
+              value={candidate.military_status || ""}
+              onChange={(e) => updateField("military_status", e.target.value)}
             >
               <MenuItem value="">Select</MenuItem>
               <MenuItem value="Completed">Completed</MenuItem>
@@ -223,13 +227,13 @@ export default function EditPage() {
             Employment
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               select
               label="Current Job Status"
               sx={{ minWidth: 200 }}
-              value={candidate.job_status || ''}
-              onChange={(e) => updateField('job_status', e.target.value)}
+              value={candidate.job_status || ""}
+              onChange={(e) => updateField("job_status", e.target.value)}
             >
               <MenuItem value="">Select</MenuItem>
               <MenuItem value="Employed">Employed</MenuItem>
@@ -240,8 +244,8 @@ export default function EditPage() {
               select
               label="Status"
               sx={{ minWidth: 200 }}
-              value={candidate.status || ''}
-              onChange={(e) => updateField('status', e.target.value)}
+              value={candidate.status || ""}
+              onChange={(e) => updateField("status", e.target.value)}
             >
               <MenuItem value="pending">pending</MenuItem>
               <MenuItem value="called">called</MenuItem>
@@ -253,8 +257,8 @@ export default function EditPage() {
               select
               label="Can Start From"
               sx={{ minWidth: 200 }}
-              value={candidate.can_start_from || ''}
-              onChange={(e) => updateField('can_start_from', e.target.value)}
+              value={candidate.can_start_from || ""}
+              onChange={(e) => updateField("can_start_from", e.target.value)}
             >
               <MenuItem value="">Select</MenuItem>
               <MenuItem value="1 Week">1 Week</MenuItem>
@@ -264,9 +268,12 @@ export default function EditPage() {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={candidate.available_9_to_6 === 'Yes'}
+                  checked={candidate.available_9_to_6 === "Yes"}
                   onChange={(e) =>
-                    updateField('available_9_to_6', e.target.checked ? 'Yes' : '')
+                    updateField(
+                      "available_9_to_6",
+                      e.target.checked ? "Yes" : "",
+                    )
                   }
                 />
               }
@@ -278,18 +285,18 @@ export default function EditPage() {
             Contact &amp; Source
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               label="Telegram ID"
-              value={candidate.telegram_id || ''}
-              onChange={(e) => updateField('telegram_id', e.target.value)}
+              value={candidate.telegram_id || ""}
+              onChange={(e) => updateField("telegram_id", e.target.value)}
             />
             <TextField
               select
               label="Source of News"
               sx={{ minWidth: 200 }}
-              value={candidate.source_of_news || ''}
-              onChange={(e) => updateField('source_of_news', e.target.value)}
+              value={candidate.source_of_news || ""}
+              onChange={(e) => updateField("source_of_news", e.target.value)}
             >
               <MenuItem value="Linkedin">Linkedin</MenuItem>
               <MenuItem value="Connections">Connections</MenuItem>
@@ -302,13 +309,13 @@ export default function EditPage() {
             Portfolio &amp; Scores
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={candidate.has_portfolio === 'Yes'}
+                  checked={candidate.has_portfolio === "Yes"}
                   onChange={(e) =>
-                    updateField('has_portfolio', e.target.checked ? 'Yes' : '')
+                    updateField("has_portfolio", e.target.checked ? "Yes" : "")
                   }
                 />
               }
@@ -317,21 +324,23 @@ export default function EditPage() {
             <TextField
               label="Portfolio Score"
               type="number"
-              value={candidate.portfolio_score || ''}
-              onChange={(e) => updateField('portfolio_score', e.target.value)}
+              value={candidate.portfolio_score || ""}
+              onChange={(e) => updateField("portfolio_score", e.target.value)}
             />
             <TextField
               label="Previous Work Score"
               type="number"
-              value={candidate.previous_work_score || ''}
-              onChange={(e) => updateField('previous_work_score', e.target.value)}
+              value={candidate.previous_work_score || ""}
+              onChange={(e) =>
+                updateField("previous_work_score", e.target.value)
+              }
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={candidate.ok_with_task === 'Yes'}
+                  checked={candidate.ok_with_task === "Yes"}
                   onChange={(e) =>
-                    updateField('ok_with_task', e.target.checked ? 'Yes' : '')
+                    updateField("ok_with_task", e.target.checked ? "Yes" : "")
                   }
                 />
               }
@@ -340,14 +349,14 @@ export default function EditPage() {
             <TextField
               label="Interviewer Score"
               type="number"
-              value={candidate.interviewer_score || ''}
-              onChange={(e) => updateField('interviewer_score', e.target.value)}
+              value={candidate.interviewer_score || ""}
+              onChange={(e) => updateField("interviewer_score", e.target.value)}
             />
             <TextField
               label="Look Score"
               type="number"
-              value={candidate.look_score || ''}
-              onChange={(e) => updateField('look_score', e.target.value)}
+              value={candidate.look_score || ""}
+              onChange={(e) => updateField("look_score", e.target.value)}
             />
           </Box>
 
@@ -355,11 +364,11 @@ export default function EditPage() {
             Location &amp; Resume
           </Typography>
           <Divider />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <TextField
               label="City / Area in Tehran"
-              value={candidate.location || ''}
-              onChange={(e) => updateField('location', e.target.value)}
+              value={candidate.location || ""}
+              onChange={(e) => updateField("location", e.target.value)}
             />
             <Button variant="outlined" component="label">
               Upload Resume
@@ -385,16 +394,16 @@ export default function EditPage() {
         </Box>
       )}
       {tab === 1 && (
-        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
             {Object.entries(expConfig).map(([key, info]) => (
               <FormControlLabel
                 key={key}
                 control={
                   <Checkbox
-                    checked={candidate[key] === 'Yes'}
+                    checked={candidate[key] === "Yes"}
                     onChange={(e) =>
-                      updateField(key, e.target.checked ? 'Yes' : '')
+                      updateField(key, e.target.checked ? "Yes" : "")
                     }
                   />
                 }
@@ -407,53 +416,65 @@ export default function EditPage() {
             multiline
             rows={8}
             sx={{ flex: 1, minWidth: 300 }}
-            value={candidate.technical_experience_notes || ''}
-            onChange={(e) => updateField('technical_experience_notes', e.target.value)}
+            value={candidate.technical_experience_notes || ""}
+            onChange={(e) =>
+              updateField("technical_experience_notes", e.target.value)
+            }
           />
         </Box>
       )}
       {tab === 2 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
             label="Design Score"
             type="number"
-            value={candidate.design_score || ''}
-            onChange={(e) => updateField('design_score', e.target.value)}
+            value={candidate.design_score || ""}
+            onChange={(e) => updateField("design_score", e.target.value)}
           />
         </Box>
       )}
       {tab === 3 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {meetings.map((m, idx) => (
-            <Box key={idx} sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box key={idx} sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
               <TextField
                 label="Date"
-                value={m.date || ''}
-                onChange={(e) => updateMeeting(idx, 'date', e.target.value)}
+                value={m.date || ""}
+                onChange={(e) => updateMeeting(idx, "date", e.target.value)}
               />
               <TextField
                 select
                 label="Day"
                 sx={{ minWidth: 200 }}
-                value={m.day || ''}
-                onChange={(e) => updateMeeting(idx, 'day', e.target.value)}
+                value={m.day || ""}
+                onChange={(e) => updateMeeting(idx, "day", e.target.value)}
               >
                 <MenuItem value="">-</MenuItem>
-                {['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'].map((d) => (
-                  <MenuItem key={d} value={d}>{d}</MenuItem>
+                {[
+                  "Saturday",
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                ].map((d) => (
+                  <MenuItem key={d} value={d}>
+                    {d}
+                  </MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="Time"
-                value={m.time || ''}
-                onChange={(e) => updateMeeting(idx, 'time', e.target.value)}
+                value={m.time || ""}
+                onChange={(e) => updateMeeting(idx, "time", e.target.value)}
               />
               <TextField
                 select
                 label="Type"
                 sx={{ minWidth: 200 }}
-                value={m.location || ''}
-                onChange={(e) => updateMeeting(idx, 'location', e.target.value)}
+                value={m.location || ""}
+                onChange={(e) => updateMeeting(idx, "location", e.target.value)}
               >
                 <MenuItem value="online">online</MenuItem>
                 <MenuItem value="offline">offline</MenuItem>
@@ -462,8 +483,8 @@ export default function EditPage() {
                 select
                 label="Status"
                 sx={{ minWidth: 200 }}
-                value={m.status || ''}
-                onChange={(e) => updateMeeting(idx, 'status', e.target.value)}
+                value={m.status || ""}
+                onChange={(e) => updateMeeting(idx, "status", e.target.value)}
               >
                 <MenuItem value="calendered">calendered</MenuItem>
                 <MenuItem value="attended">attended</MenuItem>
@@ -477,12 +498,14 @@ export default function EditPage() {
           </Button>
         </Box>
       )}
-      <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ mt: 3, display: "flex", alignItems: "center", gap: 1 }}>
         <Button variant="contained" onClick={handleSave} sx={{ mr: 1 }}>
           Save
         </Button>
-        <Button variant="outlined" onClick={() => router.push('/')}>Back</Button>
-        <IconButton color="error" onClick={handleDelete} sx={{ ml: 'auto' }}>
+        <Button variant="outlined" onClick={() => router.push("/")}>
+          Back
+        </Button>
+        <IconButton color="error" onClick={handleDelete} sx={{ ml: "auto" }}>
           <DeleteIcon />
         </IconButton>
       </Box>

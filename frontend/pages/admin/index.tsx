@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Head from "next/head";
 import {
   Container,
   Typography,
@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
   Box,
-} from '@mui/material';
+} from "@mui/material";
 
 interface Position {
   id: string;
@@ -21,7 +21,7 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/positions')
+    fetch("http://localhost:5000/api/positions")
       .then((res) => res.json())
       .then((data) => setPositions(data));
   }, []);
@@ -31,13 +31,22 @@ export default function AdminPage() {
       <Head>
         <title>Admin</title>
       </Head>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         <Typography variant="h4">Positions</Typography>
-        <Button variant="outlined" onClick={() => router.push('/')}>Back</Button>
+        <Button variant="outlined" onClick={() => router.push("/")}>
+          Back
+        </Button>
       </Box>
       <Button
         variant="contained"
-        onClick={() => router.push('/admin/position/new')}
+        onClick={() => router.push("/admin/position/new")}
         sx={{ mb: 2 }}
       >
         Add Position
