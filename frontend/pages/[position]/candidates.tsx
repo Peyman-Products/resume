@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import AddCandidateDialog from '../../components/AddCandidateDialog';
 import ViewDrawer from '../../components/ViewDrawer';
@@ -113,7 +113,7 @@ export default function CandidateList() {
             onClick={() => deleteCandidate(params.row.id)}
             aria-label="delete"
           >
-            <DeleteIcon fontSize="inherit" />
+            <DeleteOutlineIcon fontSize="inherit" />
           </IconButton>
         </>
       ),
