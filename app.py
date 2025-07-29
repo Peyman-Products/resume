@@ -233,6 +233,18 @@ def save_position():
     return jsonify({'status': 'ok'})
 
 
+@app.route('/delete_position/<pos_id>', methods=['POST'])
+def delete_position(pos_id):
+    """Delete a position from the scoring configuration."""
+    config = load_scoring_config()
+    positions = config.get('positions', {})
+    if pos_id in positions:
+        del positions[pos_id]
+        with open(SCORING_CONFIG_FILE, 'w') as f:
+            json.dump(config, f, indent=2)
+    return jsonify({'status': 'ok'})
+
+
 @app.route('/save_global', methods=['POST'])
 def save_global():
     """Update global scoring configuration."""
